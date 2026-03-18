@@ -132,6 +132,7 @@ a {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .topbar {
@@ -163,6 +164,7 @@ a {
   flex-direction: column;
   gap: 1.25rem;
   flex: 1;
+  min-width: 0;
 }
 
 .panel-card,
@@ -178,6 +180,7 @@ a {
 
 .panel-card {
   padding: 1.3rem;
+  min-width: 0;
 }
 
 .metric-grid {
@@ -313,6 +316,28 @@ a {
   margin-left: 0.5rem;
 }
 
+.dataTables_wrapper {
+  width: 100%;
+}
+
+.dataTables_wrapper .row {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.dataTables_wrapper .row > [class*="col-"] {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+  margin-bottom: 0.75rem;
+}
+
 .toast-shell {
   position: fixed;
   inset: 0;
@@ -384,6 +409,86 @@ a {
   .topbar {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .topbar-actions,
+  .section-header,
+  .panel-card .d-flex,
+  .app-footer {
+    flex-wrap: wrap;
+  }
+
+  .content-wrap {
+    padding: 1rem;
+    overflow-x: hidden;
+  }
+
+  .panel-card {
+    padding: 1rem;
+  }
+
+  .panel-card form,
+  .table-wrap,
+  .dataTables_wrapper,
+  .dataTables_wrapper .row {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .panel-card form .row,
+  .dataTables_wrapper .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .panel-card form [class*="col-"],
+  .dataTables_wrapper .row > [class*="col-"] {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-wrap table,
+  .dataTables_wrapper table {
+    width: 100% !important;
+  }
+
+  .dataTables_wrapper .row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .dataTables_wrapper .dataTables_filter input,
+  .dataTables_wrapper .dataTables_length select {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-top: 0.35rem;
+  }
+
+  .dataTables_wrapper .dataTables_filter,
+  .dataTables_wrapper .dataTables_length {
+    width: 100%;
+  }
+
+  .dataTables_wrapper .dataTables_paginate {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.35rem;
+  }
+
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    margin-left: 0 !important;
+  }
+
+  .dataTables_wrapper .dataTables_info {
+    white-space: normal;
   }
 
   .app-footer {
