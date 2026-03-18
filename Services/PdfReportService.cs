@@ -46,11 +46,11 @@ public class PdfReportService
 
                     table.Header(header =>
                     {
-                        header.Cell().Element(CellStyle).Text("Fecha");
-                        header.Cell().Element(CellStyle).Text("Principal");
-                        header.Cell().Element(CellStyle).Text("Detalle");
-                        header.Cell().Element(CellStyle).Text("Estado");
-                        header.Cell().Element(CellStyle).AlignRight().Text("Monto");
+                        header.Cell().Element(CellStyle).Text(model.DateHeader);
+                        header.Cell().Element(CellStyle).Text(model.MainHeader);
+                        header.Cell().Element(CellStyle).Text(model.SecondaryHeader);
+                        header.Cell().Element(CellStyle).Text(model.StatusHeader);
+                        header.Cell().Element(CellStyle).AlignRight().Text(model.AmountHeader);
                     });
 
                     foreach (var row in model.Rows)
@@ -59,7 +59,7 @@ public class PdfReportService
                         table.Cell().Element(BodyStyle).Text(row.Main);
                         table.Cell().Element(BodyStyle).Text(row.Secondary);
                         table.Cell().Element(BodyStyle).Text(row.Status);
-                        table.Cell().Element(BodyStyle).AlignRight().Text(row.Amount.ToString("N2"));
+                        table.Cell().Element(BodyStyle).AlignRight().Text(string.IsNullOrWhiteSpace(row.AmountText) ? row.Amount.ToString("N2") : row.AmountText);
                     }
                 });
 

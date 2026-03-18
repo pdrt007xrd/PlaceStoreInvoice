@@ -6,7 +6,7 @@ Este manual explica el flujo de uso del sistema actual para operar clientes, pro
 
 ## 1. Acceso al sistema
 
-1. Abra la aplicacion en el navegador.
+1. Abra la aplicación en el navegador.
 2. En la pantalla de inicio de sesión escriba:
    Usuario: `admin`
    Contraseña: `Admin123*`
@@ -42,10 +42,10 @@ La pantalla de inicio muestra:
 - Cantidad de clientes
 - Cantidad de proveedores
 - Cantidad de productos
-- Cotizaciones del dia
-- Facturas del dia
-- Ventas del dia
-- Compras del dia
+- Cotizaciones del día
+- Facturas del día
+- Ventas del día
+- Compras del día
 - Balance de caja y bancos
 - Alertas rápidas
 - Accesos directos a procesos frecuentes
@@ -111,7 +111,7 @@ Para crear un producto o servicio:
 3. Presione `Guardar`.
 
 Importante:
-- Este mismo catalogo se usa en ventas y compras.
+- Este mismo catálogo se usa en ventas y compras.
 - Cuando registra una compra, el precio de venta del producto puede actualizarse con base en el costo y la ganancia fija indicada en esa compra.
 
 ## 5. Compras
@@ -124,11 +124,11 @@ Ruta:
 Para registrar una compra:
 1. Presione `Nueva compra`.
 2. Complete:
-   Numero
+   Número
    Fecha
    Proveedor
    Forma de pago
-3. En la linea del detalle complete:
+3. En la línea del detalle complete:
    Producto o servicio
    Cantidad
    Costo
@@ -145,11 +145,11 @@ Precio de venta = Costo + Ganancia fija
 Que ocurre al guardar:
 - Se registra la compra.
 - Se calcula el total de la compra.
-- El producto seleccionado actualiza su precio de venta segun el costo y la ganancia fija indicada.
+- El producto seleccionado actualiza su precio de venta según el costo y la ganancia fija indicada.
 
 Importante:
 - Actualmente el sistema actualiza el precio de venta del producto.
-- Aun no existe un modulo completo de inventario con existencias, entradas y salidas acumuladas.
+- Aún no existe un módulo completo de inventario con existencias, entradas y salidas acumuladas.
 
 ## 5.2 Facturas de proveedor
 
@@ -159,7 +159,7 @@ Ruta:
 Para registrar una factura de proveedor:
 1. Presione `Nueva factura proveedor`.
 2. Seleccione:
-   Numero
+   Número
    Fecha
    Compra relacionada
 3. Presione `Guardar factura`.
@@ -175,19 +175,19 @@ Ruta:
 `Ventas > Cotizaciones`
 
 Para crear una cotización:
-1. Presione `Nueva cotizacion`.
+1. Presione `Nueva cotización`.
 2. Complete:
    Número
    Fecha
    Cliente
    Estado
    Forma de pago
-3. En la linea del detalle complete:
+3. En la línea del detalle complete:
    Producto o servicio
    Cantidad
    Precio
 4. Verifique el total.
-5. Presione `Guardar cotizacion`.
+5. Presione `Guardar cotización`.
 
 Uso:
 - Sirve como documento previo a la factura.
@@ -213,12 +213,12 @@ Para crear una factura:
    Forma de pago
 3. La fecha de creación la asigna el sistema automáticamente.
 4. En el detalle puede trabajar con varias líneas.
-5. En cada linea complete:
+5. En cada línea complete:
    Producto o servicio
    Cantidad
    Precio
-6. Use `Agregar linea` si necesita más productos.
-7. Puede quitar lineas con el botón `Quitar`.
+6. Use `Agregar línea` si necesita más productos.
+7. Puede quitar líneas con el botón `Quitar`.
 8. Presione `Guardar e imprimir factura`.
 9. El sistema muestra una pantalla posterior con:
    vista previa del PDF
@@ -229,8 +229,8 @@ Para crear una factura:
 
 Importante:
 - La fecha de creación de la factura no se puede modificar manualmente.
-- El sistema la guarda en el momento real de la creacion.
-- Luego de guardar la factura, el flujo principal abre el PDF inline para impresion directa.
+- El sistema la guarda en el momento real de la creación.
+- Luego de guardar la factura, el flujo principal abre el PDF inline para impresión directa.
 - El cliente y los productos admiten autocompletado por nombre mientras escribe.
 
 ### Editar una factura
@@ -246,36 +246,36 @@ Desde el listado de facturas:
 4. Presione `Guardar cambios`.
 
 Restricción importante:
-- Si la factura ya tiene cobros registrados o notas de credito, el sistema bloquea su edicion para proteger el saldo y la auditoria.
+- Si la factura ya tiene cobros registrados o notas de crédito, el sistema bloquea su edición para proteger el saldo y la auditoría.
 
 ### Ver factura en PDF
 
 Desde el listado de facturas:
 1. Presione `PDF`.
 2. La factura se abre en el navegador.
-3. Desde ahi puede imprimir o guardar manualmente.
+3. Desde ahí puede imprimir o guardar manualmente.
 
-## 6.3 Notas de credito
+## 6.3 Notas de crédito
 
 Ruta:
-`Ventas > Notas de credito`
+`Ventas > Notas de crédito`
 
 Para crear una nota de credito:
-1. Presione `Nueva nota de credito`.
+1. Presione `Nueva nota de crédito`.
 2. Complete:
-   Numero
+   Número
    Fecha
    Factura relacionada
    Estado
-3. En el detalle puede usar varias lineas.
-4. Complete producto, cantidad y precio en cada linea.
-5. Presione `Guardar nota de credito`.
+3. En el detalle puede usar varias líneas.
+4. Complete producto, cantidad y precio en cada línea.
+5. Presione `Guardar nota de crédito`.
 
 Uso:
 - Sirve para anular o ajustar parcialmente una factura emitida.
 
 Comportamiento actual:
-- La nota de credito reduce el saldo pendiente de la factura relacionada.
+- La nota de crédito reduce el saldo pendiente de la factura relacionada.
 - Si la nota consume todo el saldo, la factura queda cancelada.
 - Si reduce solo una parte, la factura queda con saldo parcial.
 
@@ -339,7 +339,7 @@ Que ocurre al guardar:
 ## 7.3 Caja / Bancos
 
 Ruta:
-`Tesoreria > Caja / Bancos`
+`Tesorería > Caja / Bancos`
 
 Aquí puede:
 - Ver cuentas registradas
@@ -365,8 +365,7 @@ Todos los reportes:
 - cargan en pantalla
 - permiten filtrar por fecha
 - tienen campo de búsqueda
-- permiten autocompletar nombres al escribir en la busqueda cuando aplica
-- se pueden ordenar y paginar
+- permiten autocompletar nombres al escribir en la búsqueda cuando aplica
 - incluyen botón para ver PDF en el navegador
 
 Adicionalmente:
@@ -400,7 +399,22 @@ Permite ver:
 
 Tambien puede filtrar por proveedor y estado.
 
-## 8.3 Cuentas por cobrar
+## 8.3 Reporte de clientes
+
+Ruta:
+`Reportes > Clientes`
+
+Permite ver:
+- fecha de registro
+- nombre del cliente
+- RNC o cédula
+- dirección
+- forma de pago
+- teléfono
+
+También permite buscar por nombre, RNC, dirección o teléfono y generar el PDF del listado completo.
+
+## 8.4 Cuentas por cobrar
 
 Ruta:
 `Reportes > Cuentas por cobrar`
@@ -409,43 +423,43 @@ Permite ver facturas pendientes por cliente y rango de antiguedad.
 
 Importante:
 - Este reporte ahora usa el saldo pendiente real de cada factura.
-- Los cobros y notas de credito afectan directamente este reporte.
+- Los cobros y notas de crédito afectan directamente este reporte.
 
-## 8.4 Cuentas por pagar
+## 8.5 Cuentas por pagar
 
 Ruta:
 `Reportes > Cuentas por pagar`
 
 Permite ver facturas de proveedor pendientes y su antiguedad.
 
-## 8.5 Reporte de notas de credito
+## 8.6 Reporte de notas de crédito
 
 Ruta:
-`Reportes > Notas de credito`
+`Reportes > Notas de crédito`
 
 Permite filtrar por:
 - fecha
 - nombre del cliente
-- numero de la nota
-- numero de la factura relacionada
+- número de la nota
+- número de la factura relacionada
 
-Tambien permite filtrar por cliente desde el selector del reporte.
+También permite filtrar por cliente desde el selector del reporte.
 
-## 8.6 Libro de ventas
+## 8.7 Libro de ventas
 
 Ruta:
 `Reportes > Libro de ventas`
 
 Muestra resumen de facturas emitidas dentro del rango indicado.
 
-## 8.7 Libro de compras
+## 8.8 Libro de compras
 
 Ruta:
 `Reportes > Libro de compras`
 
 Muestra resumen de compras dentro del rango indicado.
 
-## 8.8 Flujo de caja
+## 8.9 Flujo de caja
 
 Ruta:
 `Reportes > Flujo de caja`
@@ -455,7 +469,7 @@ Muestra ingresos y egresos dentro del rango indicado.
 ## 9. Usuarios y roles
 
 Ruta:
-`Configuracion > Usuarios / Roles`
+`Configuración > Usuarios / Roles`
 
 Para crear un usuario:
 1. Presione `Nuevo usuario`.
@@ -469,15 +483,15 @@ Para crear un usuario:
 
 Nota:
 - El rol `Administrador` tiene acceso total.
-- El rol `Operador` puede trabajar maestros, ventas, compras, tesoreria y reportes.
-- El rol `Consulta` solo trabaja dashboard y reportes.
-- Configuracion queda reservada para `Administrador`.
+- El rol `Operador` puede trabajar maestros, ventas, compras, tesorería y reportes.
+- El rol `Consulta` solo trabaja inicio y reportes.
+- Configuración queda reservada para `Administrador`.
 
 ## 10. Flujo operativo recomendado
 
 Este es el flujo recomendado para usar el sistema desde cero:
 
-1. Iniciar sesion.
+1. Iniciar sesión.
 2. Configurar datos de la empresa.
 3. Crear clientes.
 4. Crear proveedores.
@@ -489,8 +503,8 @@ Este es el flujo recomendado para usar el sistema desde cero:
 10. Registrar notas de crédito cuando sea necesario ajustar una venta.
 11. Registrar cobros de clientes.
 12. Registrar pagos a proveedores.
-12. Revisar caja y bancos.
-13. Consultar reportes y abrir PDF en el navegador.
+13. Revisar caja y bancos.
+14. Consultar reportes y abrir PDF en el navegador.
 
 Flujo resumido de cliente a cobro:
 1. Crear el cliente en `Maestros > Clientes`.
@@ -501,18 +515,18 @@ Flujo resumido de cliente a cobro:
 
 ## 11. Observaciones importantes del sistema actual
 
-- Las facturas tienen fecha de creacion automatica y no editable.
+- Las facturas tienen fecha de creación automática y no editable.
 - Los reportes PDF, las facturas PDF y las cotizaciones PDF se abren en el navegador.
-- El precio de venta puede actualizarse desde compras usando ganancia fija por linea.
-- Los cobros ahora se registran contra una factura especifica.
-- Las notas de credito reducen el saldo pendiente de la factura relacionada.
-- Existen campos de auditoria basicos para creacion y actualizacion interna de registros.
-- El sistema aun no maneja inventario completo con existencia disponible, kardex o costo promedio.
-- El login puede entrar directo al dashboard si la sesion sigue activa.
+- El precio de venta puede actualizarse desde compras usando ganancia fija por línea.
+- Los cobros ahora se registran contra una factura específica.
+- Las notas de crédito reducen el saldo pendiente de la factura relacionada.
+- Existen campos de auditoría básicos para creación y actualización interna de registros.
+- El sistema aún no maneja inventario completo con existencia disponible, kardex o costo promedio.
+- El login puede entrar directo al inicio si la sesión sigue activa.
 
 ## 12. Soporte
 
 Pie de página del sistema:
 `Desarrollado por DevTechRD 829-966-1111`
 
-Tambien puede usar el botón de WhatsApp visible en el sistema.
+También puede usar el botón de WhatsApp visible en el sistema.

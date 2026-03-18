@@ -72,6 +72,7 @@
                         }
 
                         <div class="menu-title">Reportes</div>
+                        <a class="menu-item @(currentAction == "Clientes" ? "active" : "")" asp-controller="Reportes" asp-action="Clientes">Clientes</a>
                         <a class="menu-item @(currentAction == "Ventas" ? "active" : "")" asp-controller="Reportes" asp-action="Ventas">Ventas</a>
                         <a class="menu-item @(currentAction == "Compras" ? "active" : "")" asp-controller="Reportes" asp-action="Compras">Compras</a>
                         <a class="menu-item @(currentAction == "CuentasPorCobrar" ? "active" : "")" asp-controller="Reportes" asp-action="CuentasPorCobrar">Cuentas por cobrar</a>

@@ -28,6 +28,7 @@ public class ReportRowViewModel
     public string Secondary { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
     public decimal Amount { get; set; }
+    public string AmountText { get; set; } = string.Empty;
 }
 
 public class ReportResultViewModel
@@ -35,6 +36,11 @@ public class ReportResultViewModel
     public string Title { get; set; } = string.Empty;
     public CompanyHeaderViewModel Company { get; set; } = new();
     public ReportFilterViewModel Filters { get; set; } = new();
+    public string DateHeader { get; set; } = "Fecha";
+    public string MainHeader { get; set; } = "Principal";
+    public string SecondaryHeader { get; set; } = "Detalle";
+    public string StatusHeader { get; set; } = "Estado";
+    public string AmountHeader { get; set; } = "Monto";
     public List<ReportRowViewModel> Rows { get; set; } = [];
 }
 
