@@ -71,7 +71,7 @@ public class VentasController(AppDbContext context, PdfReportService pdfReportSe
         model.Total = model.Items.Sum(x => x.Total);
         context.Invoices.Add(model);
         await context.SaveChangesAsync();
-        return RedirectToAction(nameof(Facturas));
+        return RedirectToAction(nameof(ImprimirFactura), new { id = model.Id });
     }
 
     [HttpGet]

@@ -202,11 +202,13 @@ Para crear una factura:
    Producto o servicio
    Cantidad
    Precio
-5. Presione `Guardar factura`.
+5. Presione `Guardar e imprimir factura`.
+6. El sistema genera inmediatamente el PDF de la factura en el navegador, listo para imprimir.
 
 Importante:
 - La fecha de creacion de la factura no se puede modificar manualmente.
 - El sistema la guarda en el momento real de la creacion.
+- Luego de guardar la factura, el flujo principal abre el PDF inline para impresion directa.
 
 ### Editar una factura
 
