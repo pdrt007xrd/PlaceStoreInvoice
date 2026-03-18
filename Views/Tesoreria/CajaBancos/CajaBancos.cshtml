@@ -1,0 +1,19 @@
+@model IEnumerable<CashBankAccount>
+@{
+    ViewData["Title"] = "Caja y bancos";
+}
+<section class="panel-card">
+    <div class="section-header">
+        <h3 class="h5 mb-0">Caja y bancos</h3>
+        <a class="btn btn-primary" asp-action="CrearMovimientoCajaBanco">Nuevo movimiento</a>
+    </div>
+    <table class="table table-striped datatable">
+        <thead><tr><th>Cuenta</th><th>Tipo</th><th>Balance</th></tr></thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr><td>@item.Name</td><td>@item.AccountType</td><td>@item.Balance.ToString("N2")</td></tr>
+        }
+        </tbody>
+    </table>
+</section>

@@ -1,0 +1,26 @@
+@model Invoice
+@{
+    ViewData["Title"] = "Nueva factura";
+}
+<section class="panel-card">
+    <form asp-action="CrearFactura" method="post">
+        <div class="row g-3">
+            <div class="col-md-3"><label class="form-label" asp-for="Number"></label><input class="form-control" asp-for="Number" /></div>
+            <div class="col-md-3"><label class="form-label">Fecha de creacion</label><input class="form-control" value="@Model.Date.ToString("dd/MM/yyyy HH:mm")" readonly /></div>
+            <div class="col-md-3"><label class="form-label" asp-for="CustomerId">Cliente</label><select class="form-select" asp-for="CustomerId" asp-items="ViewBag.Customers"></select></div>
+            <div class="col-md-3"><label class="form-label" asp-for="Status">Estado</label><select class="form-select" asp-for="Status" asp-items="Html.GetEnumSelectList<DocumentStatus>()"></select></div>
+            <div class="col-md-4"><label class="form-label" asp-for="PaymentMethod">Forma de pago</label><select class="form-select" asp-for="PaymentMethod" asp-items="Html.GetEnumSelectList<PaymentMethod>()"></select></div>
+        </div>
+        <hr />
+        <div class="row g-3 item-row">
+            <div class="col-md-4"><label class="form-label">Producto / Servicio</label><select name="Items[0].ProductServiceId" class="form-select" asp-items="ViewBag.Products"></select></div>
+            <div class="col-md-2"><label class="form-label">Cantidad</label><input name="Items[0].Quantity" class="form-control qty-input" value="1" /></div>
+            <div class="col-md-3"><label class="form-label">Precio</label><input name="Items[0].UnitPrice" class="form-control price-input" value="0" /></div>
+            <div class="col-md-3"><label class="form-label">Total</label><input name="Items[0].Total" class="form-control total-input" value="0" readonly /></div>
+        </div>
+        <div class="mt-4 d-flex gap-2">
+            <button class="btn btn-primary" type="submit">Guardar factura</button>
+            <a class="btn btn-outline-secondary" asp-action="Facturas">Volver</a>
+        </div>
+    </form>
+</section>

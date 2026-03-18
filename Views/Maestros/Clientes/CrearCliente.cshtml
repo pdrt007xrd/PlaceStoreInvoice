@@ -1,0 +1,18 @@
+@model Customer
+@{
+    ViewData["Title"] = "Nuevo cliente";
+}
+<section class="panel-card">
+    <form asp-action="CrearCliente" method="post">
+        <div class="row g-3">
+            <div class="col-md-6"><label class="form-label" asp-for="Name"></label><input class="form-control" asp-for="Name" /></div>
+            <div class="col-md-6"><label class="form-label" asp-for="TaxId">RNC o Cedula</label><input class="form-control" asp-for="TaxId" /></div>
+            <div class="col-md-8"><label class="form-label" asp-for="Address"></label><input class="form-control" asp-for="Address" /></div>
+            <div class="col-md-4"><label class="form-label" asp-for="PaymentMethod">Forma de pago</label><select class="form-select" asp-for="PaymentMethod" asp-items="Html.GetEnumSelectList<PaymentMethod>()"></select></div>
+        </div>
+        <div class="mt-4 d-flex gap-2">
+            <button class="btn btn-primary" type="submit">Guardar</button>
+            <a class="btn btn-outline-secondary" asp-action="Clientes">Volver</a>
+        </div>
+    </form>
+</section>

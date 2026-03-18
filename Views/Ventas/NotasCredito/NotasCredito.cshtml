@@ -1,0 +1,19 @@
+@model IEnumerable<CreditNote>
+@{
+    ViewData["Title"] = "Notas de credito";
+}
+<section class="panel-card">
+    <div class="section-header">
+        <h3 class="h5 mb-0">Notas de credito</h3>
+        <a class="btn btn-primary" asp-action="CrearNotaCredito">Nueva nota de credito</a>
+    </div>
+    <table class="table table-striped datatable">
+        <thead><tr><th>Numero</th><th>Fecha</th><th>Factura</th><th>Estado</th><th>Total</th></tr></thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr><td>@item.Number</td><td>@item.Date.ToString("dd/MM/yyyy")</td><td>@item.Invoice?.Number</td><td>@item.Status</td><td>@item.Total.ToString("N2")</td></tr>
+        }
+        </tbody>
+    </table>
+</section>

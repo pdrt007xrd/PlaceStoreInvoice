@@ -1,0 +1,18 @@
+@model CashBankMovement
+@{
+    ViewData["Title"] = "Nuevo movimiento";
+}
+<section class="panel-card">
+    <form asp-action="CrearMovimientoCajaBanco" method="post">
+        <div class="row g-3">
+            <div class="col-md-3"><label class="form-label" asp-for="Date"></label><input class="form-control" asp-for="Date" type="date" /></div>
+            <div class="col-md-4"><label class="form-label" asp-for="CashBankAccountId">Cuenta</label><select class="form-select" asp-for="CashBankAccountId" asp-items="ViewBag.Accounts"></select></div>
+            <div class="col-md-5"><label class="form-label" asp-for="Description">Descripcion</label><input class="form-control" asp-for="Description" /></div>
+            <div class="col-md-4"><label class="form-label" asp-for="Amount">Monto</label><input class="form-control" asp-for="Amount" /></div>
+        </div>
+        <div class="mt-4 d-flex gap-2">
+            <button class="btn btn-primary" type="submit">Guardar movimiento</button>
+            <a class="btn btn-outline-secondary" asp-action="CajaBancos">Volver</a>
+        </div>
+    </form>
+</section>

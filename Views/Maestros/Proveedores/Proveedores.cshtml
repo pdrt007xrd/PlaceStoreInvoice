@@ -1,0 +1,21 @@
+@model IEnumerable<Supplier>
+@{
+    ViewData["Title"] = "Proveedores";
+}
+<section class="panel-card">
+    <div class="section-header">
+        <h3 class="h5 mb-0">Listado de proveedores</h3>
+        <a class="btn btn-primary" asp-action="CrearProveedor">Nuevo proveedor</a>
+    </div>
+    <div class="table-wrap">
+        <table class="table table-striped datatable">
+            <thead><tr><th>Nombre</th><th>RNC / Cedula</th><th>Direccion</th><th>Contacto</th><th>Telefono</th><th>Email</th></tr></thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr><td>@item.Name</td><td>@item.TaxId</td><td>@item.Address</td><td>@item.ContactName</td><td>@item.Phone</td><td>@item.Email</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</section>

@@ -1,0 +1,21 @@
+@model IEnumerable<Customer>
+@{
+    ViewData["Title"] = "Clientes";
+}
+<section class="panel-card">
+    <div class="section-header">
+        <h3 class="h5 mb-0">Listado de clientes</h3>
+        <a class="btn btn-primary" asp-action="CrearCliente">Nuevo cliente</a>
+    </div>
+    <div class="table-wrap">
+        <table class="table table-striped datatable">
+            <thead><tr><th>Nombre</th><th>RNC / Cedula</th><th>Direccion</th><th>Forma de pago</th></tr></thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr><td>@item.Name</td><td>@item.TaxId</td><td>@item.Address</td><td>@item.PaymentMethod</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</section>

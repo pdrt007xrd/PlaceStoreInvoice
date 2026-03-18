@@ -1,0 +1,21 @@
+@model IEnumerable<ProductService>
+@{
+    ViewData["Title"] = "Productos y servicios";
+}
+<section class="panel-card">
+    <div class="section-header">
+        <h3 class="h5 mb-0">Catalogo</h3>
+        <a class="btn btn-primary" asp-action="CrearProductoServicio">Nuevo producto o servicio</a>
+    </div>
+    <div class="table-wrap">
+        <table class="table table-striped datatable">
+            <thead><tr><th>Nombre</th><th>Unidad</th><th>Precio venta</th></tr></thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr><td>@item.Name</td><td>@item.UnitOfMeasure</td><td>@item.SalePrice.ToString("N2")</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</section>

@@ -1,0 +1,19 @@
+@model User
+@{
+    ViewData["Title"] = "Nuevo usuario";
+}
+<section class="panel-card">
+    <form asp-action="CrearUsuario" method="post">
+        <div class="row g-3">
+            <div class="col-md-6"><label class="form-label" asp-for="FullName">Nombre completo</label><input class="form-control" asp-for="FullName" /></div>
+            <div class="col-md-3"><label class="form-label" asp-for="UserName">Usuario</label><input class="form-control" asp-for="UserName" /></div>
+            <div class="col-md-3"><label class="form-label">Clave</label><input class="form-control" name="plainPassword" type="password" /></div>
+            <div class="col-md-4"><label class="form-label" asp-for="RoleId">Rol</label><select class="form-select" asp-for="RoleId" asp-items="ViewBag.Roles"></select></div>
+            <div class="col-md-2 d-flex align-items-end"><div class="form-check"><input class="form-check-input" asp-for="IsActive" /><label class="form-check-label" asp-for="IsActive">Activo</label></div></div>
+        </div>
+        <div class="mt-4 d-flex gap-2">
+            <button class="btn btn-primary" type="submit">Guardar usuario</button>
+            <a class="btn btn-outline-secondary" asp-action="UsuariosRoles">Volver</a>
+        </div>
+    </form>
+</section>

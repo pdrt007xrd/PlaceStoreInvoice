@@ -1,0 +1,25 @@
+@model Purchase
+@{
+    ViewData["Title"] = "Nueva compra";
+}
+<section class="panel-card">
+    <form asp-action="CrearRegistroCompra" method="post">
+        <div class="row g-3">
+            <div class="col-md-3"><label class="form-label" asp-for="Number"></label><input class="form-control" asp-for="Number" /></div>
+            <div class="col-md-3"><label class="form-label" asp-for="Date"></label><input class="form-control" asp-for="Date" type="date" /></div>
+            <div class="col-md-3"><label class="form-label" asp-for="SupplierId">Proveedor</label><select class="form-select" asp-for="SupplierId" asp-items="ViewBag.Suppliers"></select></div>
+            <div class="col-md-3"><label class="form-label" asp-for="PaymentMethod">Forma de pago</label><select class="form-select" asp-for="PaymentMethod" asp-items="Html.GetEnumSelectList<PaymentMethod>()"></select></div>
+        </div>
+        <hr />
+        <div class="row g-3 item-row">
+            <div class="col-md-4"><label class="form-label">Producto / Servicio</label><select name="Items[0].ProductServiceId" class="form-select" asp-items="ViewBag.Products"></select></div>
+            <div class="col-md-2"><label class="form-label">Cantidad</label><input name="Items[0].Quantity" class="form-control qty-input" value="1" /></div>
+            <div class="col-md-3"><label class="form-label">Costo</label><input name="Items[0].UnitCost" class="form-control cost-input" value="0" /></div>
+            <div class="col-md-3"><label class="form-label">Total</label><input name="Items[0].Total" class="form-control total-input" value="0" readonly /></div>
+        </div>
+        <div class="mt-4 d-flex gap-2">
+            <button class="btn btn-primary" type="submit">Guardar compra</button>
+            <a class="btn btn-outline-secondary" asp-action="RegistroCompras">Volver</a>
+        </div>
+    </form>
+</section>

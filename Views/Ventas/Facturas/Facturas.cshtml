@@ -1,0 +1,29 @@
+@model IEnumerable<Invoice>
+@{
+    ViewData["Title"] = "Facturas";
+}
+<section class="panel-card">
+    <div class="section-header">
+        <h3 class="h5 mb-0">Facturas</h3>
+        <a class="btn btn-primary" asp-action="CrearFactura">Nueva factura</a>
+    </div>
+    <table class="table table-striped datatable">
+        <thead><tr><th>Numero</th><th>Fecha</th><th>Cliente</th><th>Estado</th><th>Total</th><th>Acciones</th></tr></thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Number</td>
+                <td>@item.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@item.Customer?.Name</td>
+                <td>@item.Status</td>
+                <td>@item.Total.ToString("N2")</td>
+                <td class="d-flex gap-2">
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="EditarFactura" asp-route-id="@item.Id">Editar</a>
+                    <a class="btn btn-sm btn-primary" asp-action="ImprimirFactura" asp-route-id="@item.Id" target="_blank">PDF</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>

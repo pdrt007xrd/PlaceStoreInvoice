@@ -1,0 +1,17 @@
+@model ProductService
+@{
+    ViewData["Title"] = "Nuevo producto o servicio";
+}
+<section class="panel-card">
+    <form asp-action="CrearProductoServicio" method="post">
+        <div class="row g-3">
+            <div class="col-md-6"><label class="form-label" asp-for="Name"></label><input class="form-control" asp-for="Name" /></div>
+            <div class="col-md-3"><label class="form-label" asp-for="UnitOfMeasure">Unidad</label><input class="form-control" asp-for="UnitOfMeasure" /></div>
+            <div class="col-md-3"><label class="form-label" asp-for="SalePrice">Precio venta</label><input class="form-control" asp-for="SalePrice" /></div>
+        </div>
+        <div class="mt-4 d-flex gap-2">
+            <button class="btn btn-primary" type="submit">Guardar</button>
+            <a class="btn btn-outline-secondary" asp-action="ProductosServicios">Volver</a>
+        </div>
+    </form>
+</section>

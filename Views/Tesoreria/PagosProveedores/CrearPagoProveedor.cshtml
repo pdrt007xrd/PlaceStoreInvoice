@@ -1,0 +1,19 @@
+@model SupplierPayment
+@{
+    ViewData["Title"] = "Nuevo pago a proveedor";
+}
+<section class="panel-card">
+    <form asp-action="CrearPagoProveedor" method="post">
+        <div class="row g-3">
+            <div class="col-md-3"><label class="form-label" asp-for="Date"></label><input class="form-control" asp-for="Date" type="date" /></div>
+            <div class="col-md-3"><label class="form-label" asp-for="SupplierId">Proveedor</label><select class="form-select" asp-for="SupplierId" asp-items="ViewBag.Suppliers"></select></div>
+            <div class="col-md-3"><label class="form-label" asp-for="PaymentMethod">Metodo</label><select class="form-select" asp-for="PaymentMethod" asp-items="Html.GetEnumSelectList<PaymentMethod>()"></select></div>
+            <div class="col-md-3"><label class="form-label" asp-for="Amount">Monto</label><input class="form-control" asp-for="Amount" /></div>
+            <div class="col-12"><label class="form-label" asp-for="Reference">Referencia</label><input class="form-control" asp-for="Reference" /></div>
+        </div>
+        <div class="mt-4 d-flex gap-2">
+            <button class="btn btn-primary" type="submit">Guardar pago</button>
+            <a class="btn btn-outline-secondary" asp-action="PagosProveedores">Volver</a>
+        </div>
+    </form>
+</section>

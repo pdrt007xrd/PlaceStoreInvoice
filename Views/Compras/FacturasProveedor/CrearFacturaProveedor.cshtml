@@ -1,0 +1,17 @@
+@model SupplierInvoice
+@{
+    ViewData["Title"] = "Nueva factura de proveedor";
+}
+<section class="panel-card">
+    <form asp-action="CrearFacturaProveedor" method="post">
+        <div class="row g-3">
+            <div class="col-md-4"><label class="form-label" asp-for="Number"></label><input class="form-control" asp-for="Number" /></div>
+            <div class="col-md-4"><label class="form-label" asp-for="Date"></label><input class="form-control" asp-for="Date" type="date" /></div>
+            <div class="col-md-4"><label class="form-label" asp-for="PurchaseId">Compra</label><select class="form-select" asp-for="PurchaseId" asp-items="ViewBag.Purchases"></select></div>
+        </div>
+        <div class="mt-4 d-flex gap-2">
+            <button class="btn btn-primary" type="submit">Guardar factura</button>
+            <a class="btn btn-outline-secondary" asp-action="FacturasProveedor">Volver</a>
+        </div>
+    </form>
+</section>

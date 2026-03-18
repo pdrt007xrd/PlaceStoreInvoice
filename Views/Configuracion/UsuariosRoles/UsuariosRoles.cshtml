@@ -1,0 +1,19 @@
+@model IEnumerable<User>
+@{
+    ViewData["Title"] = "Usuarios y roles";
+}
+<section class="panel-card">
+    <div class="section-header">
+        <h3 class="h5 mb-0">Usuarios del sistema</h3>
+        <a class="btn btn-primary" asp-action="CrearUsuario">Nuevo usuario</a>
+    </div>
+    <table class="table table-striped datatable">
+        <thead><tr><th>Nombre</th><th>Usuario</th><th>Rol</th><th>Activo</th></tr></thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr><td>@item.FullName</td><td>@item.UserName</td><td>@item.Role?.Name</td><td>@(item.IsActive ? "Si" : "No")</td></tr>
+        }
+        </tbody>
+    </table>
+</section>

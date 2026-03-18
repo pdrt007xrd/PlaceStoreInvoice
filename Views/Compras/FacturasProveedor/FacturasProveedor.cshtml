@@ -1,0 +1,19 @@
+@model IEnumerable<SupplierInvoice>
+@{
+    ViewData["Title"] = "Facturas de proveedor";
+}
+<section class="panel-card">
+    <div class="section-header">
+        <h3 class="h5 mb-0">Facturas de proveedor</h3>
+        <a class="btn btn-primary" asp-action="CrearFacturaProveedor">Nueva factura proveedor</a>
+    </div>
+    <table class="table table-striped datatable">
+        <thead><tr><th>Numero</th><th>Fecha</th><th>Compra</th><th>Estado</th><th>Total</th></tr></thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr><td>@item.Number</td><td>@item.Date.ToString("dd/MM/yyyy")</td><td>@item.Purchase?.Number</td><td>@item.Status</td><td>@item.Total.ToString("N2")</td></tr>
+        }
+        </tbody>
+    </table>
+</section>
