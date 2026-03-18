@@ -197,6 +197,7 @@ public class PurchaseItem : BaseEntity
     public ProductService? ProductService { get; set; }
     public decimal Quantity { get; set; }
     public decimal UnitCost { get; set; }
+    public decimal FixedProfitAmount { get; set; }
     public decimal Total { get; set; }
 }
 

@@ -175,7 +175,8 @@ public class VentasController(AppDbContext context, PdfReportService pdfReportSe
         };
 
         var bytes = pdfReportService.GenerateInvoice(document);
-        return File(bytes, "application/pdf", $"factura-{invoice.Number}.pdf");
+        Response.Headers.ContentDisposition = $"inline; filename=factura-{invoice.Number}.pdf";
+        return File(bytes, "application/pdf");
     }
 
     public async Task<IActionResult> NotasCredito()

@@ -19,4 +19,25 @@ $(function () {
         const price = Number(row.find(".price-input, .cost-input").val() || 0);
         row.find(".total-input").val((qty * price).toFixed(2));
     });
+
+    $(document).on("input", ".cost-input, .profit-input", function () {
+        const row = $(this).closest(".item-row");
+        const cost = Number(row.find(".cost-input").val() || 0);
+        const profit = Number(row.find(".profit-input").val() || 0);
+        row.find(".sale-price-input").val((cost + profit).toFixed(2));
+    });
+
+    $(document).on("click", "#sidebarMenu .menu-item", function () {
+        if (window.innerWidth >= 992) {
+            return;
+        }
+
+        const sidebarMenu = document.getElementById("sidebarMenu");
+        if (!sidebarMenu || !sidebarMenu.classList.contains("show")) {
+            return;
+        }
+
+        const collapseInstance = bootstrap.Collapse.getOrCreateInstance(sidebarMenu);
+        collapseInstance.hide();
+    });
 });

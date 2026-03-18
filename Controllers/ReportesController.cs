@@ -22,6 +22,9 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
     public async Task<IActionResult> CuentasPorPagar(DateTime? from, DateTime? to, string search = "")
         => View("CuentasPorPagar/CuentasPorPagar", await BuildCuentasPorPagarAsync("Cuentas por pagar", from, to, search));
 
+    public async Task<IActionResult> NotasCredito(DateTime? from, DateTime? to, string search = "")
+        => View("NotasCredito/NotasCredito", await BuildNotasCreditoAsync("Reporte de notas de credito", from, to, search));
+
     public async Task<IActionResult> LibroVentas(DateTime? from, DateTime? to, string search = "")
         => View("LibroVentas/LibroVentas", await BuildVentasReportAsync("Libro de ventas", from, to, search));
 
@@ -39,13 +42,15 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
             "compras" => await BuildComprasReportAsync("Reporte de compras", from, to, search),
             "cxc" => await BuildCuentasPorCobrarAsync("Cuentas por cobrar", from, to, search),
             "cxp" => await BuildCuentasPorPagarAsync("Cuentas por pagar", from, to, search),
+            "notas-credito" => await BuildNotasCreditoAsync("Reporte de notas de credito", from, to, search),
             "libro-ventas" => await BuildVentasReportAsync("Libro de ventas", from, to, search),
             "libro-compras" => await BuildComprasReportAsync("Libro de compras", from, to, search),
             _ => await BuildFlujoCajaAsync("Flujo de caja", from, to, search)
         };
 
         var bytes = pdfReportService.Generate(report);
-        return File(bytes, "application/pdf", $"{type}-{DateTime.Now:yyyyMMddHHmmss}.pdf");
+        Response.Headers.ContentDisposition = $"inline; filename={type}-{DateTime.Now:yyyyMMddHHmmss}.pdf";
+        return File(bytes, "application/pdf");
     }
 
     private async Task<ReportResultViewModel> BuildVentasReportAsync(string title, DateTime? from, DateTime? to, string search)
@@ -144,6 +149,38 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
                 Date = x.Date.ToString("dd/MM/yyyy"),
                 Main = x.Purchase!.Supplier!.Name,
                 Secondary = $"Factura proveedor {x.Number} / {GetAgeRange(x.Date)}",
+                Status = x.Status.ToString(),
+                Amount = x.Total
+            }).ToListAsync()
+        };
+    }
+
+    private async Task<ReportResultViewModel> BuildNotasCreditoAsync(string title, DateTime? from, DateTime? to, string search)
+    {
+        var query = context.CreditNotes
+            .Include(x => x.Invoice)
+            .ThenInclude(x => x!.Customer)
+            .AsQueryable();
+
+        query = ApplyDates(query, from, to);
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            query = query.Where(x =>
+                x.Number.Contains(search) ||
+                x.Invoice!.Number.Contains(search) ||
+                x.Invoice.Customer!.Name.Contains(search));
+        }
+
+        return new ReportResultViewModel
+        {
+            Title = title,
+            Company = await GetCompanyAsync(),
+            Filters = new ReportFilterViewModel { From = from, To = to, Search = search },
+            Rows = await query.OrderByDescending(x => x.Date).Select(x => new ReportRowViewModel
+            {
+                Date = x.Date.ToString("dd/MM/yyyy"),
+                Main = x.Invoice!.Customer!.Name,
+                Secondary = $"Nota {x.Number} / Factura {x.Invoice.Number}",
                 Status = x.Status.ToString(),
                 Amount = x.Total
             }).ToListAsync()

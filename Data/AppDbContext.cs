@@ -72,6 +72,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     private static void ConfigurePurchaseItem(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<PurchaseItem>().Property(x => x.UnitCost).HasPrecision(18, 2);
+        modelBuilder.Entity<PurchaseItem>().Property(x => x.FixedProfitAmount).HasPrecision(18, 2);
         modelBuilder.Entity<PurchaseItem>().Property(x => x.Quantity).HasPrecision(18, 2);
         modelBuilder.Entity<PurchaseItem>().Property(x => x.Total).HasPrecision(18, 2);
     }

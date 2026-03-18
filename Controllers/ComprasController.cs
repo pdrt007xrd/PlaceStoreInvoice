@@ -34,6 +34,16 @@ public class ComprasController(AppDbContext context) : Controller
 
         model.Total = model.Items.Sum(x => x.Total);
         context.Purchases.Add(model);
+
+        foreach (var item in model.Items)
+        {
+            var product = await context.ProductServices.FindAsync(item.ProductServiceId);
+            if (product is not null)
+            {
+                product.SalePrice = item.UnitCost + item.FixedProfitAmount;
+            }
+        }
+
         await context.SaveChangesAsync();
         return RedirectToAction(nameof(RegistroCompras));
     }
