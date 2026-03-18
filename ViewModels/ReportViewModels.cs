@@ -1,3 +1,5 @@
+using Ventas.Models;
+
 namespace Ventas.ViewModels;
 
 public class CompanyHeaderViewModel
@@ -14,6 +16,9 @@ public class ReportFilterViewModel
     public DateTime? From { get; set; }
     public DateTime? To { get; set; }
     public string Search { get; set; } = string.Empty;
+    public int? CustomerId { get; set; }
+    public int? SupplierId { get; set; }
+    public DocumentStatus? Status { get; set; }
 }
 
 public class ReportRowViewModel
@@ -53,4 +58,13 @@ public class InvoicePdfViewModel
     public string Status { get; set; } = string.Empty;
     public decimal Total { get; set; }
     public List<InvoicePdfItemViewModel> Items { get; set; } = [];
+}
+
+public class InvoicePostPrintViewModel
+{
+    public int InvoiceId { get; set; }
+    public string Number { get; set; } = string.Empty;
+    public string Customer { get; set; } = string.Empty;
+    public decimal Total { get; set; }
+    public decimal BalanceDue { get; set; }
 }

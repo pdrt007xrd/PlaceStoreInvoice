@@ -12,8 +12,17 @@ public class DbSeeder(AppDbContext context)
         {
             context.Roles.AddRange(
                 new Role { Name = "Administrador" },
-                new Role { Name = "Operador" });
+                new Role { Name = "Operador" },
+                new Role { Name = "Consulta" });
             await context.SaveChangesAsync();
+        }
+        else
+        {
+            if (!await context.Roles.AnyAsync(x => x.Name == "Consulta"))
+            {
+                context.Roles.Add(new Role { Name = "Consulta" });
+                await context.SaveChangesAsync();
+            }
         }
 
         if (!await context.Users.AnyAsync())

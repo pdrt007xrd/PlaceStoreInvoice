@@ -7,7 +7,7 @@ using Ventas.Models;
 
 namespace Ventas.Controllers;
 
-[Authorize]
+[Authorize(Policy = "AdminOrOperador")]
 public class ComprasController(AppDbContext context) : Controller
 {
     public async Task<IActionResult> RegistroCompras()

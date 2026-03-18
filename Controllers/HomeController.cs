@@ -7,7 +7,7 @@ using Ventas.ViewModels;
 
 namespace Ventas.Controllers;
 
-[Authorize]
+[Authorize(Policy = "AdminOperadorConsulta")]
 public class HomeController(AppDbContext context) : Controller
 {
     public async Task<IActionResult> Index()

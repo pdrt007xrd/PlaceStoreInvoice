@@ -246,6 +246,14 @@ a {
   white-space: nowrap;
 }
 
+.pdf-frame {
+  width: 100%;
+  min-height: 70vh;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: #fff;
+}
+
 .section-header {
   display: flex;
   justify-content: space-between;

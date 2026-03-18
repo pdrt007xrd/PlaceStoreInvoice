@@ -4,11 +4,14 @@
 }
 <section class="panel-card">
     <form asp-action="CrearCobro" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
         <div class="row g-3">
             <div class="col-md-3"><label class="form-label" asp-for="Date"></label><input class="form-control" asp-for="Date" type="date" /></div>
-            <div class="col-md-3"><label class="form-label" asp-for="CustomerId">Cliente</label><select class="form-select" asp-for="CustomerId" asp-items="ViewBag.Customers"></select></div>
+            <div class="col-md-3"><label class="form-label" asp-for="InvoiceId">Factura</label><select class="form-select invoice-selector" asp-for="InvoiceId" asp-items="ViewBag.Invoices"></select></div>
+            <div class="col-md-3"><label class="form-label">Cliente</label><input class="form-control" value="@ViewBag.SelectedInvoiceCustomer" readonly /></div>
             <div class="col-md-3"><label class="form-label" asp-for="PaymentMethod">Metodo</label><select class="form-select" asp-for="PaymentMethod" asp-items="Html.GetEnumSelectList<PaymentMethod>()"></select></div>
             <div class="col-md-3"><label class="form-label" asp-for="Amount">Monto</label><input class="form-control" asp-for="Amount" /></div>
+            <div class="col-md-3"><label class="form-label">Saldo pendiente</label><input class="form-control" value="@($"{ViewBag.SelectedInvoiceBalance ?? 0:N2}")" readonly /></div>
             <div class="col-12"><label class="form-label" asp-for="Reference">Referencia</label><input class="form-control" asp-for="Reference" /></div>
         </div>
         <div class="mt-4 d-flex gap-2">

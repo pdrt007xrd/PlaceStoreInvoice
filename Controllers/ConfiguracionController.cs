@@ -8,7 +8,7 @@ using Ventas.Models;
 
 namespace Ventas.Controllers;
 
-[Authorize]
+[Authorize(Policy = "AdminOnly")]
 public class ConfiguracionController(AppDbContext context) : Controller
 {
     public async Task<IActionResult> Empresa()

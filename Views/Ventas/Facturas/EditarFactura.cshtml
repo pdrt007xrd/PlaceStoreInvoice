@@ -1,29 +1,65 @@
 @model Invoice
 @{
     ViewData["Title"] = "Editar factura";
+    var rows = Model.Items?.Any() == true ? Model.Items.ToList() : new List<InvoiceItem> { new() { Quantity = 1 } };
+    var customerName = ((IEnumerable<Customer>)ViewBag.CustomersData).FirstOrDefault(x => x.Id == Model.CustomerId)?.Name ?? string.Empty;
 }
 <section class="panel-card">
     <form asp-action="EditarFactura" method="post">
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="Number" />
         <input type="hidden" asp-for="Date" />
+        <input type="hidden" asp-for="CustomerId" id="CustomerId" />
         <div class="row g-3">
             <div class="col-md-3"><label class="form-label">Numero</label><input class="form-control" value="@Model.Number" readonly /></div>
             <div class="col-md-3"><label class="form-label">Fecha de creacion</label><input class="form-control" value="@Model.Date.ToString("dd/MM/yyyy HH:mm")" readonly /></div>
-            <div class="col-md-3"><label class="form-label" asp-for="CustomerId">Cliente</label><select class="form-select" asp-for="CustomerId" asp-items="ViewBag.Customers"></select></div>
+            <div class="col-md-3"><label class="form-label">Cliente</label><input class="form-control autocomplete-input" list="customers-list" value="@customerName" data-hidden-target="CustomerId" /></div>
             <div class="col-md-3"><label class="form-label" asp-for="Status">Estado</label><select class="form-select" asp-for="Status" asp-items="Html.GetEnumSelectList<DocumentStatus>()"></select></div>
             <div class="col-md-4"><label class="form-label" asp-for="PaymentMethod">Forma de pago</label><select class="form-select" asp-for="PaymentMethod" asp-items="Html.GetEnumSelectList<PaymentMethod>()"></select></div>
         </div>
         <hr />
-        <div class="row g-3 item-row">
-            <div class="col-md-4"><label class="form-label">Producto / Servicio</label><select name="Items[0].ProductServiceId" class="form-select" asp-items="ViewBag.Products"></select></div>
-            <div class="col-md-2"><label class="form-label">Cantidad</label><input name="Items[0].Quantity" class="form-control qty-input" value="@Model.Items.FirstOrDefault()?.Quantity.ToString("0.##")" /></div>
-            <div class="col-md-3"><label class="form-label">Precio</label><input name="Items[0].UnitPrice" class="form-control price-input" value="@Model.Items.FirstOrDefault()?.UnitPrice.ToString("0.##")" /></div>
-            <div class="col-md-3"><label class="form-label">Total</label><input name="Items[0].Total" class="form-control total-input" value="@Model.Items.FirstOrDefault()?.Total.ToString("0.##")" readonly /></div>
+        <datalist id="customers-list">
+            @foreach (var customer in (IEnumerable<Customer>)ViewBag.CustomersData)
+            {
+                <option value="@customer.Name" data-id="@customer.Id"></option>
+            }
+        </datalist>
+        <datalist id="products-list">
+            @foreach (var product in (IEnumerable<ProductService>)ViewBag.ProductsData)
+            {
+                <option value="@product.Name" data-id="@product.Id" data-price="@product.SalePrice"></option>
+            }
+        </datalist>
+        <div id="invoice-items" class="item-lines" data-next-index="@rows.Count">
+            @for (var i = 0; i < rows.Count; i++)
+            {
+                var item = rows[i];
+                var productName = ((IEnumerable<ProductService>)ViewBag.ProductsData).FirstOrDefault(x => x.Id == item.ProductServiceId)?.Name ?? string.Empty;
+                <div class="row g-3 item-row mb-2" data-index="@i">
+                    <input type="hidden" name="Items[@i].ProductServiceId" id="Items_@(i)__ProductServiceId" value="@item.ProductServiceId" />
+                    <div class="col-md-4"><label class="form-label">Producto / Servicio</label><input class="form-control autocomplete-input product-autocomplete" list="products-list" value="@productName" data-hidden-target="Items_@(i)__ProductServiceId" data-price-target="Items_@(i)__UnitPrice" /></div>
+                    <div class="col-md-2"><label class="form-label">Cantidad</label><input id="Items_@(i)__Quantity" name="Items[@i].Quantity" class="form-control qty-input" value="@item.Quantity.ToString("0.##")" /></div>
+                    <div class="col-md-2"><label class="form-label">Precio</label><input id="Items_@(i)__UnitPrice" name="Items[@i].UnitPrice" class="form-control price-input" value="@item.UnitPrice.ToString("0.##")" /></div>
+                    <div class="col-md-2"><label class="form-label">Total</label><input id="Items_@(i)__Total" name="Items[@i].Total" class="form-control total-input" value="@item.Total.ToString("0.##")" readonly /></div>
+                    <div class="col-md-2 d-flex align-items-end"><button type="button" class="btn btn-outline-danger remove-item-row w-100">Quitar</button></div>
+                </div>
+            }
         </div>
+        <button type="button" class="btn btn-outline-primary add-item-row" data-target="#invoice-items" data-template="#invoice-item-template">Agregar linea</button>
         <div class="mt-4 d-flex gap-2">
             <button class="btn btn-primary" type="submit">Guardar cambios</button>
             <a class="btn btn-outline-secondary" asp-action="Facturas">Volver</a>
         </div>
     </form>
 </section>
+
+<template id="invoice-item-template">
+    <div class="row g-3 item-row mb-2" data-index="__INDEX__">
+        <input type="hidden" name="Items[__INDEX__].ProductServiceId" id="Items___INDEX___ProductServiceId" value="" />
+        <div class="col-md-4"><label class="form-label">Producto / Servicio</label><input class="form-control autocomplete-input product-autocomplete" list="products-list" value="" data-hidden-target="Items___INDEX___ProductServiceId" data-price-target="Items___INDEX___UnitPrice" /></div>
+        <div class="col-md-2"><label class="form-label">Cantidad</label><input id="Items___INDEX___Quantity" name="Items[__INDEX__].Quantity" class="form-control qty-input" value="1" /></div>
+        <div class="col-md-2"><label class="form-label">Precio</label><input id="Items___INDEX___UnitPrice" name="Items[__INDEX__].UnitPrice" class="form-control price-input" value="0" /></div>
+        <div class="col-md-2"><label class="form-label">Total</label><input id="Items___INDEX___Total" name="Items[__INDEX__].Total" class="form-control total-input" value="0" readonly /></div>
+        <div class="col-md-2 d-flex align-items-end"><button type="button" class="btn btn-outline-danger remove-item-row w-100">Quitar</button></div>
+    </div>
+</template>

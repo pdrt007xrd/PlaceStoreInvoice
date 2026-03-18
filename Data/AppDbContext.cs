@@ -1,9 +1,11 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Ventas.Models;
 
 namespace Ventas.Data;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public class AppDbContext(DbContextOptions<AppDbContext> options, IHttpContextAccessor httpContextAccessor) : DbContext(options)
 {
     public DbSet<Role> Roles => Set<Role>();
     public DbSet<User> Users => Set<User>();
@@ -37,6 +39,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasForeignKey(x => x.RoleId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<Receipt>()
+            .HasOne(x => x.Invoice)
+            .WithMany(x => x.Receipts)
+            .HasForeignKey(x => x.InvoiceId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<CreditNote>()
+            .HasOne(x => x.Invoice)
+            .WithMany(x => x.CreditNotes)
+            .HasForeignKey(x => x.InvoiceId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         modelBuilder.Entity<CompanySettings>()
             .Property(x => x.LogoUrl)
             .HasMaxLength(300);
@@ -47,6 +61,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         modelBuilder.Entity<Quote>().Property(x => x.Total).HasPrecision(18, 2);
         modelBuilder.Entity<Invoice>().Property(x => x.Total).HasPrecision(18, 2);
+        modelBuilder.Entity<Invoice>().Property(x => x.BalanceDue).HasPrecision(18, 2);
         modelBuilder.Entity<CreditNote>().Property(x => x.Total).HasPrecision(18, 2);
         modelBuilder.Entity<Purchase>().Property(x => x.Total).HasPrecision(18, 2);
         modelBuilder.Entity<SupplierInvoice>().Property(x => x.Total).HasPrecision(18, 2);
@@ -62,6 +77,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<CashBankMovement>().Property(x => x.Amount).HasPrecision(18, 2);
     }
 
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        ApplyAuditInfo();
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    public override int SaveChanges()
+    {
+        ApplyAuditInfo();
+        return base.SaveChanges();
+    }
+
     private static void ConfigureDocumentItem<T>(ModelBuilder modelBuilder) where T : DocumentItem
     {
         modelBuilder.Entity<T>().Property(x => x.UnitPrice).HasPrecision(18, 2);
@@ -75,5 +102,32 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<PurchaseItem>().Property(x => x.FixedProfitAmount).HasPrecision(18, 2);
         modelBuilder.Entity<PurchaseItem>().Property(x => x.Quantity).HasPrecision(18, 2);
         modelBuilder.Entity<PurchaseItem>().Property(x => x.Total).HasPrecision(18, 2);
+    }
+
+    private void ApplyAuditInfo()
+    {
+        var userName =
+            httpContextAccessor.HttpContext?.User?.Identity?.Name
+            ?? httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Name)?.Value
+            ?? "Sistema";
+
+        var now = DateTime.Now;
+        foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt = now;
+                entry.Entity.CreatedBy = userName;
+                entry.Entity.UpdatedAt = null;
+                entry.Entity.UpdatedBy = null;
+            }
+            else if (entry.State == EntityState.Modified)
+            {
+                entry.Property(x => x.CreatedAt).IsModified = false;
+                entry.Property(x => x.CreatedBy).IsModified = false;
+                entry.Entity.UpdatedAt = now;
+                entry.Entity.UpdatedBy = userName;
+            }
+        }
     }
 }

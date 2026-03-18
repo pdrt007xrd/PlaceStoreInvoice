@@ -7,29 +7,67 @@ using Ventas.Models;
 
 namespace Ventas.Controllers;
 
-[Authorize]
+[Authorize(Policy = "AdminOrOperador")]
 public class TesoreriaController(AppDbContext context) : Controller
 {
     public async Task<IActionResult> Cobros()
-        => View("Cobros/Cobros", await context.Receipts.Include(x => x.Customer).OrderByDescending(x => x.Date).ToListAsync());
+        => View("Cobros/Cobros", await context.Receipts.Include(x => x.Customer).Include(x => x.Invoice).OrderByDescending(x => x.Date).ToListAsync());
 
     [HttpGet]
-    public async Task<IActionResult> CrearCobro()
+    public async Task<IActionResult> CrearCobro(int? invoiceId = null)
     {
         ViewBag.Customers = new SelectList(await context.Customers.OrderBy(x => x.Name).ToListAsync(), "Id", "Name");
-        return View("Cobros/CrearCobro", new Receipt());
+        ViewBag.Invoices = new SelectList(await context.Invoices.Include(x => x.Customer).Where(x => x.BalanceDue > 0).OrderByDescending(x => x.Date).ToListAsync(), "Id", "Number", invoiceId);
+
+        var model = new Receipt();
+        if (invoiceId.HasValue)
+        {
+            var invoice = await context.Invoices.Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == invoiceId.Value);
+            if (invoice is not null)
+            {
+                model.InvoiceId = invoice.Id;
+                model.CustomerId = invoice.CustomerId;
+                model.Amount = invoice.BalanceDue;
+                ViewBag.SelectedInvoiceCustomer = invoice.Customer?.Name;
+                ViewBag.SelectedInvoiceBalance = invoice.BalanceDue;
+            }
+        }
+
+        return View("Cobros/CrearCobro", model);
     }
 
     [HttpPost]
     public async Task<IActionResult> CrearCobro(Receipt model)
     {
+        var invoice = model.InvoiceId.HasValue
+            ? await context.Invoices.Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == model.InvoiceId.Value)
+            : null;
+
+        if (invoice is null)
+        {
+            ModelState.AddModelError("InvoiceId", "Debe seleccionar una factura pendiente.");
+        }
+        else
+        {
+            model.CustomerId = invoice.CustomerId;
+            if (model.Amount <= 0 || model.Amount > invoice.BalanceDue)
+            {
+                ModelState.AddModelError("Amount", "El monto debe ser mayor que cero y no puede exceder el saldo pendiente.");
+            }
+        }
+
         if (!ModelState.IsValid)
         {
             ViewBag.Customers = new SelectList(await context.Customers.OrderBy(x => x.Name).ToListAsync(), "Id", "Name");
+            ViewBag.Invoices = new SelectList(await context.Invoices.Include(x => x.Customer).Where(x => x.BalanceDue > 0).OrderByDescending(x => x.Date).ToListAsync(), "Id", "Number", model.InvoiceId);
+            ViewBag.SelectedInvoiceCustomer = invoice?.Customer?.Name;
+            ViewBag.SelectedInvoiceBalance = invoice?.BalanceDue ?? 0;
             return View("Cobros/CrearCobro", model);
         }
 
         context.Receipts.Add(model);
+        invoice!.BalanceDue -= model.Amount;
+        invoice.Status = invoice.BalanceDue <= 0 ? DocumentStatus.Paid : DocumentStatus.PartiallyPaid;
         await RegisterMovementAsync("Ingreso por cobro", model.Amount);
         await context.SaveChangesAsync();
         return RedirectToAction(nameof(Cobros));

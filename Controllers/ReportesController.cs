@@ -2,49 +2,75 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Ventas.Data;
+using Ventas.Models;
 using Ventas.Services;
 using Ventas.ViewModels;
 
 namespace Ventas.Controllers;
 
-[Authorize]
+[Authorize(Policy = "AdminOperadorConsulta")]
 public class ReportesController(AppDbContext context, PdfReportService pdfReportService) : Controller
 {
-    public async Task<IActionResult> Ventas(DateTime? from, DateTime? to, string search = "")
-        => View("Ventas/Ventas", await BuildVentasReportAsync("Reporte de ventas", from, to, search));
+    public async Task<IActionResult> Ventas(DateTime? from, DateTime? to, string search = "", int? customerId = null, DocumentStatus? status = null)
+    {
+        await LoadReportLookupsAsync(customers: true);
+        ViewBag.EnableStatusFilter = true;
+        return View("Ventas/Ventas", await BuildVentasReportAsync("Reporte de ventas", from, to, search, customerId, status));
+    }
 
-    public async Task<IActionResult> Compras(DateTime? from, DateTime? to, string search = "")
-        => View("Compras/Compras", await BuildComprasReportAsync("Reporte de compras", from, to, search));
+    public async Task<IActionResult> Compras(DateTime? from, DateTime? to, string search = "", int? supplierId = null, DocumentStatus? status = null)
+    {
+        await LoadReportLookupsAsync(suppliers: true);
+        ViewBag.EnableStatusFilter = true;
+        return View("Compras/Compras", await BuildComprasReportAsync("Reporte de compras", from, to, search, supplierId, status));
+    }
 
-    public async Task<IActionResult> CuentasPorCobrar(DateTime? from, DateTime? to, string search = "")
-        => View("CuentasPorCobrar/CuentasPorCobrar", await BuildCuentasPorCobrarAsync("Cuentas por cobrar", from, to, search));
+    public async Task<IActionResult> CuentasPorCobrar(DateTime? from, DateTime? to, string search = "", int? customerId = null)
+    {
+        await LoadReportLookupsAsync(customers: true);
+        return View("CuentasPorCobrar/CuentasPorCobrar", await BuildCuentasPorCobrarAsync("Cuentas por cobrar", from, to, search, customerId));
+    }
 
-    public async Task<IActionResult> CuentasPorPagar(DateTime? from, DateTime? to, string search = "")
-        => View("CuentasPorPagar/CuentasPorPagar", await BuildCuentasPorPagarAsync("Cuentas por pagar", from, to, search));
+    public async Task<IActionResult> CuentasPorPagar(DateTime? from, DateTime? to, string search = "", int? supplierId = null)
+    {
+        await LoadReportLookupsAsync(suppliers: true);
+        return View("CuentasPorPagar/CuentasPorPagar", await BuildCuentasPorPagarAsync("Cuentas por pagar", from, to, search, supplierId));
+    }
 
-    public async Task<IActionResult> NotasCredito(DateTime? from, DateTime? to, string search = "")
-        => View("NotasCredito/NotasCredito", await BuildNotasCreditoAsync("Reporte de notas de credito", from, to, search));
+    public async Task<IActionResult> NotasCredito(DateTime? from, DateTime? to, string search = "", int? customerId = null)
+    {
+        await LoadReportLookupsAsync(customers: true);
+        return View("NotasCredito/NotasCredito", await BuildNotasCreditoAsync("Reporte de notas de credito", from, to, search, customerId));
+    }
 
-    public async Task<IActionResult> LibroVentas(DateTime? from, DateTime? to, string search = "")
-        => View("LibroVentas/LibroVentas", await BuildVentasReportAsync("Libro de ventas", from, to, search));
+    public async Task<IActionResult> LibroVentas(DateTime? from, DateTime? to, string search = "", int? customerId = null, DocumentStatus? status = null)
+    {
+        await LoadReportLookupsAsync(customers: true);
+        ViewBag.EnableStatusFilter = true;
+        return View("LibroVentas/LibroVentas", await BuildVentasReportAsync("Libro de ventas", from, to, search, customerId, status));
+    }
 
-    public async Task<IActionResult> LibroCompras(DateTime? from, DateTime? to, string search = "")
-        => View("LibroCompras/LibroCompras", await BuildComprasReportAsync("Libro de compras", from, to, search));
+    public async Task<IActionResult> LibroCompras(DateTime? from, DateTime? to, string search = "", int? supplierId = null, DocumentStatus? status = null)
+    {
+        await LoadReportLookupsAsync(suppliers: true);
+        ViewBag.EnableStatusFilter = true;
+        return View("LibroCompras/LibroCompras", await BuildComprasReportAsync("Libro de compras", from, to, search, supplierId, status));
+    }
 
     public async Task<IActionResult> FlujoCaja(DateTime? from, DateTime? to, string search = "")
         => View("FlujoCaja/FlujoCaja", await BuildFlujoCajaAsync("Flujo de caja", from, to, search));
 
-    public async Task<FileResult> ExportPdf(string type, DateTime? from, DateTime? to, string search = "")
+    public async Task<FileResult> ExportPdf(string type, DateTime? from, DateTime? to, string search = "", int? customerId = null, int? supplierId = null, DocumentStatus? status = null)
     {
         var report = type switch
         {
-            "ventas" => await BuildVentasReportAsync("Reporte de ventas", from, to, search),
-            "compras" => await BuildComprasReportAsync("Reporte de compras", from, to, search),
-            "cxc" => await BuildCuentasPorCobrarAsync("Cuentas por cobrar", from, to, search),
-            "cxp" => await BuildCuentasPorPagarAsync("Cuentas por pagar", from, to, search),
-            "notas-credito" => await BuildNotasCreditoAsync("Reporte de notas de credito", from, to, search),
-            "libro-ventas" => await BuildVentasReportAsync("Libro de ventas", from, to, search),
-            "libro-compras" => await BuildComprasReportAsync("Libro de compras", from, to, search),
+            "ventas" => await BuildVentasReportAsync("Reporte de ventas", from, to, search, customerId, status),
+            "compras" => await BuildComprasReportAsync("Reporte de compras", from, to, search, supplierId, status),
+            "cxc" => await BuildCuentasPorCobrarAsync("Cuentas por cobrar", from, to, search, customerId),
+            "cxp" => await BuildCuentasPorPagarAsync("Cuentas por pagar", from, to, search, supplierId),
+            "notas-credito" => await BuildNotasCreditoAsync("Reporte de notas de credito", from, to, search, customerId),
+            "libro-ventas" => await BuildVentasReportAsync("Libro de ventas", from, to, search, customerId, status),
+            "libro-compras" => await BuildComprasReportAsync("Libro de compras", from, to, search, supplierId, status),
             _ => await BuildFlujoCajaAsync("Flujo de caja", from, to, search)
         };
 
@@ -53,10 +79,12 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
         return File(bytes, "application/pdf");
     }
 
-    private async Task<ReportResultViewModel> BuildVentasReportAsync(string title, DateTime? from, DateTime? to, string search)
+    private async Task<ReportResultViewModel> BuildVentasReportAsync(string title, DateTime? from, DateTime? to, string search, int? customerId, DocumentStatus? status)
     {
         var query = context.Invoices.Include(x => x.Customer).AsQueryable();
         query = ApplyDates(query, from, to);
+        if (customerId.HasValue) query = query.Where(x => x.CustomerId == customerId.Value);
+        if (status.HasValue) query = query.Where(x => x.Status == status.Value);
         if (!string.IsNullOrWhiteSpace(search))
         {
             query = query.Where(x => x.Number.Contains(search) || x.Customer!.Name.Contains(search));
@@ -66,22 +94,24 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
         {
             Title = title,
             Company = await GetCompanyAsync(),
-            Filters = new ReportFilterViewModel { From = from, To = to, Search = search },
+            Filters = new ReportFilterViewModel { From = from, To = to, Search = search, CustomerId = customerId, Status = status },
             Rows = await query.OrderByDescending(x => x.Date).Select(x => new ReportRowViewModel
             {
                 Date = x.Date.ToString("dd/MM/yyyy"),
                 Main = x.Number,
-                Secondary = x.Customer!.Name,
+                Secondary = $"{x.Customer!.Name} / Saldo {x.BalanceDue:N2}",
                 Status = x.Status.ToString(),
                 Amount = x.Total
             }).ToListAsync()
         };
     }
 
-    private async Task<ReportResultViewModel> BuildComprasReportAsync(string title, DateTime? from, DateTime? to, string search)
+    private async Task<ReportResultViewModel> BuildComprasReportAsync(string title, DateTime? from, DateTime? to, string search, int? supplierId, DocumentStatus? status)
     {
         var query = context.Purchases.Include(x => x.Supplier).Include(x => x.Items).ThenInclude(x => x.ProductService).AsQueryable();
         query = ApplyDates(query, from, to);
+        if (supplierId.HasValue) query = query.Where(x => x.SupplierId == supplierId.Value);
+        if (status.HasValue) query = query.Where(x => x.Status == status.Value);
         if (!string.IsNullOrWhiteSpace(search))
         {
             query = query.Where(x => x.Number.Contains(search) || x.Supplier!.Name.Contains(search));
@@ -100,15 +130,16 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
         {
             Title = title,
             Company = await GetCompanyAsync(),
-            Filters = new ReportFilterViewModel { From = from, To = to, Search = search },
+            Filters = new ReportFilterViewModel { From = from, To = to, Search = search, SupplierId = supplierId, Status = status },
             Rows = rows
         };
     }
 
-    private async Task<ReportResultViewModel> BuildCuentasPorCobrarAsync(string title, DateTime? from, DateTime? to, string search)
+    private async Task<ReportResultViewModel> BuildCuentasPorCobrarAsync(string title, DateTime? from, DateTime? to, string search, int? customerId)
     {
-        var invoices = context.Invoices.Include(x => x.Customer).Where(x => x.Status != Models.DocumentStatus.Paid).AsQueryable();
+        var invoices = context.Invoices.Include(x => x.Customer).Where(x => x.BalanceDue > 0).AsQueryable();
         invoices = ApplyDates(invoices, from, to);
+        if (customerId.HasValue) invoices = invoices.Where(x => x.CustomerId == customerId.Value);
         if (!string.IsNullOrWhiteSpace(search))
         {
             invoices = invoices.Where(x => x.Customer!.Name.Contains(search) || x.Number.Contains(search));
@@ -118,22 +149,23 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
         {
             Title = title,
             Company = await GetCompanyAsync(),
-            Filters = new ReportFilterViewModel { From = from, To = to, Search = search },
+            Filters = new ReportFilterViewModel { From = from, To = to, Search = search, CustomerId = customerId },
             Rows = await invoices.OrderByDescending(x => x.Date).Select(x => new ReportRowViewModel
             {
                 Date = x.Date.ToString("dd/MM/yyyy"),
                 Main = x.Customer!.Name,
                 Secondary = $"Factura {x.Number} / {GetAgeRange(x.Date)}",
                 Status = x.Status.ToString(),
-                Amount = x.Total
+                Amount = x.BalanceDue
             }).ToListAsync()
         };
     }
 
-    private async Task<ReportResultViewModel> BuildCuentasPorPagarAsync(string title, DateTime? from, DateTime? to, string search)
+    private async Task<ReportResultViewModel> BuildCuentasPorPagarAsync(string title, DateTime? from, DateTime? to, string search, int? supplierId)
     {
         var invoices = context.SupplierInvoices.Include(x => x.Purchase).ThenInclude(x => x!.Supplier).Where(x => x.Status != Models.DocumentStatus.Paid).AsQueryable();
         invoices = ApplyDates(invoices, from, to);
+        if (supplierId.HasValue) invoices = invoices.Where(x => x.Purchase!.SupplierId == supplierId.Value);
         if (!string.IsNullOrWhiteSpace(search))
         {
             invoices = invoices.Where(x => x.Number.Contains(search) || x.Purchase!.Supplier!.Name.Contains(search));
@@ -143,7 +175,7 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
         {
             Title = title,
             Company = await GetCompanyAsync(),
-            Filters = new ReportFilterViewModel { From = from, To = to, Search = search },
+            Filters = new ReportFilterViewModel { From = from, To = to, Search = search, SupplierId = supplierId },
             Rows = await invoices.OrderByDescending(x => x.Date).Select(x => new ReportRowViewModel
             {
                 Date = x.Date.ToString("dd/MM/yyyy"),
@@ -155,7 +187,7 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
         };
     }
 
-    private async Task<ReportResultViewModel> BuildNotasCreditoAsync(string title, DateTime? from, DateTime? to, string search)
+    private async Task<ReportResultViewModel> BuildNotasCreditoAsync(string title, DateTime? from, DateTime? to, string search, int? customerId)
     {
         var query = context.CreditNotes
             .Include(x => x.Invoice)
@@ -163,6 +195,7 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
             .AsQueryable();
 
         query = ApplyDates(query, from, to);
+        if (customerId.HasValue) query = query.Where(x => x.Invoice!.CustomerId == customerId.Value);
         if (!string.IsNullOrWhiteSpace(search))
         {
             query = query.Where(x =>
@@ -175,7 +208,7 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
         {
             Title = title,
             Company = await GetCompanyAsync(),
-            Filters = new ReportFilterViewModel { From = from, To = to, Search = search },
+            Filters = new ReportFilterViewModel { From = from, To = to, Search = search, CustomerId = customerId },
             Rows = await query.OrderByDescending(x => x.Date).Select(x => new ReportRowViewModel
             {
                 Date = x.Date.ToString("dd/MM/yyyy"),
@@ -244,5 +277,18 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
             Phone = company.Phone,
             Email = company.Email
         };
+    }
+
+    private async Task LoadReportLookupsAsync(bool customers = false, bool suppliers = false)
+    {
+        if (customers)
+        {
+            ViewBag.Customers = await context.Customers.OrderBy(x => x.Name).ToListAsync();
+        }
+
+        if (suppliers)
+        {
+            ViewBag.Suppliers = await context.Suppliers.OrderBy(x => x.Name).ToListAsync();
+        }
     }
 }

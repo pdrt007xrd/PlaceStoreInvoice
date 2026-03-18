@@ -29,6 +29,11 @@ public abstract class BaseEntity
 {
     public int Id { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
+    [StringLength(150)]
+    public string CreatedBy { get; set; } = "Sistema";
+    public DateTime? UpdatedAt { get; set; }
+    [StringLength(150)]
+    public string? UpdatedBy { get; set; }
 }
 
 public class Role : BaseEntity
@@ -160,7 +165,10 @@ public class Invoice : DocumentBase
 {
     public int CustomerId { get; set; }
     public Customer? Customer { get; set; }
+    public decimal BalanceDue { get; set; }
     public ICollection<InvoiceItem> Items { get; set; } = new List<InvoiceItem>();
+    public ICollection<Receipt> Receipts { get; set; } = new List<Receipt>();
+    public ICollection<CreditNote> CreditNotes { get; set; } = new List<CreditNote>();
 }
 
 public class InvoiceItem : DocumentItem
@@ -212,6 +220,8 @@ public class Receipt : BaseEntity
     public DateTime Date { get; set; } = DateTime.Today;
     public int CustomerId { get; set; }
     public Customer? Customer { get; set; }
+    public int? InvoiceId { get; set; }
+    public Invoice? Invoice { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
     public decimal Amount { get; set; }
     [StringLength(250)]

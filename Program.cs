@@ -15,6 +15,7 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add<NoCacheFilter>();
     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 });
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -31,7 +32,12 @@ builder.Services
         options.Cookie.SameSite = SameSiteMode.Lax;
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Administrador"));
+    options.AddPolicy("AdminOrOperador", policy => policy.RequireRole("Administrador", "Operador"));
+    options.AddPolicy("AdminOperadorConsulta", policy => policy.RequireRole("Administrador", "Operador", "Consulta"));
+});
 builder.Services.AddScoped<NoCacheFilter>();
 builder.Services.AddScoped<DbSeeder>();
 builder.Services.AddScoped<PdfReportService>();

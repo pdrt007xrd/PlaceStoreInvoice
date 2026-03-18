@@ -7,7 +7,7 @@ using Ventas.Models;
 
 namespace Ventas.Controllers;
 
-[Authorize]
+[Authorize(Policy = "AdminOrOperador")]
 public class MaestrosController(AppDbContext context) : Controller
 {
     public async Task<IActionResult> Clientes() => View("Clientes/Clientes", await context.Customers.OrderBy(x => x.Name).ToListAsync());

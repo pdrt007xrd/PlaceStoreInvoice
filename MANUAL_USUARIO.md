@@ -198,17 +198,26 @@ Para crear una factura:
    Estado
    Forma de pago
 3. La fecha de creacion la asigna el sistema automaticamente.
-4. En la linea del detalle complete:
+4. En el detalle puede trabajar con varias lineas.
+5. En cada linea complete:
    Producto o servicio
    Cantidad
    Precio
-5. Presione `Guardar e imprimir factura`.
-6. El sistema genera inmediatamente el PDF de la factura en el navegador, listo para imprimir.
+6. Use `Agregar linea` si necesita mas productos.
+7. Puede quitar lineas con el boton `Quitar`.
+8. Presione `Guardar e imprimir factura`.
+9. El sistema muestra una pantalla posterior con:
+   vista previa del PDF
+   boton para reimprimir
+   boton para registrar cobro
+   boton para crear otra factura
+   boton para volver al listado
 
 Importante:
 - La fecha de creacion de la factura no se puede modificar manualmente.
 - El sistema la guarda en el momento real de la creacion.
 - Luego de guardar la factura, el flujo principal abre el PDF inline para impresion directa.
+- El cliente y los productos admiten autocompletado por nombre mientras escribe.
 
 ### Editar una factura
 
@@ -221,6 +230,9 @@ Desde el listado de facturas:
    Detalle
 3. No puede cambiar la fecha de creacion.
 4. Presione `Guardar cambios`.
+
+Restriccion importante:
+- Si la factura ya tiene cobros registrados o notas de credito, el sistema bloquea su edicion para proteger el saldo y la auditoria.
 
 ### Ver factura en PDF
 
@@ -241,14 +253,17 @@ Para crear una nota de credito:
    Fecha
    Factura relacionada
    Estado
-3. En la linea del detalle complete:
-   Producto o servicio
-   Cantidad
-   Precio
-4. Presione `Guardar nota de credito`.
+3. En el detalle puede usar varias lineas.
+4. Complete producto, cantidad y precio en cada linea.
+5. Presione `Guardar nota de credito`.
 
 Uso:
 - Sirve para anular o ajustar parcialmente una factura emitida.
+
+Comportamiento actual:
+- La nota de credito reduce el saldo pendiente de la factura relacionada.
+- Si la nota consume todo el saldo, la factura queda cancelada.
+- Si reduce solo una parte, la factura queda con saldo parcial.
 
 ## 7. Tesoreria
 
@@ -261,7 +276,7 @@ Para registrar un cobro:
 1. Presione `Nuevo cobro`.
 2. Complete:
    Fecha
-   Cliente
+   Factura
    Metodo
    Monto
    Referencia
@@ -269,6 +284,11 @@ Para registrar un cobro:
 
 Que ocurre al guardar:
 - Se registra el cobro.
+- El cliente se toma de la factura seleccionada.
+- El sistema valida que el monto no exceda el saldo pendiente.
+- La factura baja su saldo pendiente.
+- Si el saldo llega a cero, la factura queda pagada.
+- Si el saldo no llega a cero, la factura queda parcialmente pagada.
 - Se genera un movimiento positivo en caja o bancos.
 
 ## 7.2 Pagos a proveedores
@@ -319,8 +339,14 @@ Todos los reportes:
 - cargan en pantalla
 - permiten filtrar por fecha
 - tienen campo de busqueda
+- permiten autocompletar nombres al escribir en la busqueda cuando aplica
 - se pueden ordenar y paginar
 - incluyen boton para ver PDF en el navegador
+
+Adicionalmente:
+- Algunos reportes permiten filtrar por cliente
+- Algunos permiten filtrar por proveedor
+- Los reportes de ventas y compras tambien admiten filtro por estado
 
 ## 8.1 Reporte de ventas
 
@@ -330,7 +356,10 @@ Ruta:
 Permite filtrar por:
 - fecha
 - cliente
+- estado
 - numero de factura
+
+Tambien muestra el saldo pendiente de cada factura en el detalle del reporte.
 
 ## 8.2 Reporte de compras
 
@@ -343,12 +372,18 @@ Permite ver:
 - cantidad
 - total comprado
 
+Tambien puede filtrar por proveedor y estado.
+
 ## 8.3 Cuentas por cobrar
 
 Ruta:
 `Reportes > Cuentas por cobrar`
 
 Permite ver facturas pendientes por cliente y rango de antiguedad.
+
+Importante:
+- Este reporte ahora usa el saldo pendiente real de cada factura.
+- Los cobros y notas de credito afectan directamente este reporte.
 
 ## 8.4 Cuentas por pagar
 
@@ -367,6 +402,8 @@ Permite filtrar por:
 - nombre del cliente
 - numero de la nota
 - numero de la factura relacionada
+
+Tambien permite filtrar por cliente desde el selector del reporte.
 
 ## 8.6 Libro de ventas
 
@@ -405,7 +442,10 @@ Para crear un usuario:
 3. Presione `Guardar usuario`.
 
 Nota:
-- Actualmente existen roles en el sistema, pero los permisos detallados por modulo aun no estan restringidos por rol.
+- El rol `Administrador` tiene acceso total.
+- El rol `Operador` puede trabajar maestros, ventas, compras, tesoreria y reportes.
+- El rol `Consulta` solo trabaja dashboard y reportes.
+- Configuracion queda reservada para `Administrador`.
 
 ## 10. Flujo operativo recomendado
 
@@ -430,6 +470,9 @@ Este es el flujo recomendado para usar el sistema desde cero:
 - Las facturas tienen fecha de creacion automatica y no editable.
 - Los reportes PDF y las facturas PDF se abren en el navegador.
 - El precio de venta puede actualizarse desde compras usando ganancia fija por linea.
+- Los cobros ahora se registran contra una factura especifica.
+- Las notas de credito reducen el saldo pendiente de la factura relacionada.
+- Existen campos de auditoria basicos para creacion y actualizacion interna de registros.
 - El sistema aun no maneja inventario completo con existencia disponible, kardex o costo promedio.
 - El login puede entrar directo al dashboard si la sesion sigue activa.
 

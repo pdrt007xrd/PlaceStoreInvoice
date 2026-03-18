@@ -1,0 +1,19 @@
+@model Ventas.ViewModels.InvoicePostPrintViewModel
+@{
+    ViewData["Title"] = "Factura emitida";
+}
+<section class="panel-card">
+    <div class="section-header">
+        <div>
+            <h3 class="h5 mb-1">Factura @Model.Number emitida correctamente</h3>
+            <div class="text-muted">Cliente: @Model.Customer | Total: @Model.Total.ToString("N2") | Saldo: @Model.BalanceDue.ToString("N2")</div>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a class="btn btn-primary" asp-action="ImprimirFactura" asp-route-id="@Model.InvoiceId" target="_blank">Reimprimir</a>
+            <a class="btn btn-outline-success" asp-controller="Tesoreria" asp-action="CrearCobro" asp-route-invoiceId="@Model.InvoiceId">Registrar cobro</a>
+            <a class="btn btn-outline-secondary" asp-action="CrearFactura">Crear otra factura</a>
+            <a class="btn btn-outline-dark" asp-action="Facturas">Volver al listado</a>
+        </div>
+    </div>
+    <iframe src="@Url.Action("ImprimirFactura", "Ventas", new { id = Model.InvoiceId })" class="pdf-frame" title="Factura PDF"></iframe>
+</section>
