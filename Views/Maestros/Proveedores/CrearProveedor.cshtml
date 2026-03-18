@@ -4,13 +4,14 @@
 }
 <section class="panel-card">
     <form asp-action="CrearProveedor" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
         <div class="row g-3">
-            <div class="col-md-6"><label class="form-label" asp-for="Name"></label><input class="form-control" asp-for="Name" /></div>
-            <div class="col-md-6"><label class="form-label" asp-for="TaxId">RNC o Cedula</label><input class="form-control" asp-for="TaxId" /></div>
-            <div class="col-md-6"><label class="form-label" asp-for="Address"></label><input class="form-control" asp-for="Address" /></div>
-            <div class="col-md-6"><label class="form-label" asp-for="ContactName"></label><input class="form-control" asp-for="ContactName" /></div>
-            <div class="col-md-6"><label class="form-label" asp-for="Phone"></label><input class="form-control" asp-for="Phone" /></div>
-            <div class="col-md-6"><label class="form-label" asp-for="Email"></label><input class="form-control" asp-for="Email" /></div>
+            <div class="col-md-6"><label class="form-label" asp-for="Name"></label><input class="form-control" asp-for="Name" /><span asp-validation-for="Name" class="text-danger"></span></div>
+            <div class="col-md-6"><label class="form-label" asp-for="TaxId">RNC o Cédula</label><input class="form-control" asp-for="TaxId" /><span asp-validation-for="TaxId" class="text-danger"></span></div>
+            <div class="col-md-6"><label class="form-label" asp-for="Address"></label><input class="form-control" asp-for="Address" /><span asp-validation-for="Address" class="text-danger"></span></div>
+            <div class="col-md-6"><label class="form-label" asp-for="ContactName"></label><input class="form-control" asp-for="ContactName" /><span asp-validation-for="ContactName" class="text-danger"></span></div>
+            <div class="col-md-6"><label class="form-label" asp-for="Phone"></label><input class="form-control" asp-for="Phone" /><span asp-validation-for="Phone" class="text-danger"></span></div>
+            <div class="col-md-6"><label class="form-label" asp-for="Email"></label><input class="form-control" asp-for="Email" /><span asp-validation-for="Email" class="text-danger"></span></div>
         </div>
         <div class="mt-4 d-flex gap-2">
             <button class="btn btn-primary" type="submit">Guardar</button>
@@ -18,3 +19,7 @@
         </div>
     </form>
 </section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

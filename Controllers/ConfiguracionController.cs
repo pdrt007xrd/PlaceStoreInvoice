@@ -24,8 +24,8 @@ public class ConfiguracionController(AppDbContext context) : Controller
 
         context.Companies.Update(model);
         await context.SaveChangesAsync();
-        ViewBag.Message = "Datos de empresa actualizados.";
-        return View("Empresa/Empresa", model);
+        TempData["ToastMessage"] = "Datos de la empresa actualizados correctamente.";
+        return RedirectToAction(nameof(Empresa));
     }
 
     public async Task<IActionResult> UsuariosRoles()
@@ -58,6 +58,7 @@ public class ConfiguracionController(AppDbContext context) : Controller
         model.PasswordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword);
         context.Users.Add(model);
         await context.SaveChangesAsync();
+        TempData["ToastMessage"] = "Usuario creado correctamente.";
         return RedirectToAction(nameof(UsuariosRoles));
     }
 }

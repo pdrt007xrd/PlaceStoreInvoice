@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Ventas.Data;
+using Ventas.Extensions;
 using Ventas.Models;
 using Ventas.Services;
 using Ventas.ViewModels;
@@ -40,7 +41,7 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
     public async Task<IActionResult> NotasCredito(DateTime? from, DateTime? to, string search = "", int? customerId = null)
     {
         await LoadReportLookupsAsync(customers: true);
-        return View("NotasCredito/NotasCredito", await BuildNotasCreditoAsync("Reporte de notas de credito", from, to, search, customerId));
+        return View("NotasCredito/NotasCredito", await BuildNotasCreditoAsync("Reporte de notas de crédito", from, to, search, customerId));
     }
 
     public async Task<IActionResult> LibroVentas(DateTime? from, DateTime? to, string search = "", int? customerId = null, DocumentStatus? status = null)
@@ -68,7 +69,7 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
             "compras" => await BuildComprasReportAsync("Reporte de compras", from, to, search, supplierId, status),
             "cxc" => await BuildCuentasPorCobrarAsync("Cuentas por cobrar", from, to, search, customerId),
             "cxp" => await BuildCuentasPorPagarAsync("Cuentas por pagar", from, to, search, supplierId),
-            "notas-credito" => await BuildNotasCreditoAsync("Reporte de notas de credito", from, to, search, customerId),
+            "notas-credito" => await BuildNotasCreditoAsync("Reporte de notas de crédito", from, to, search, customerId),
             "libro-ventas" => await BuildVentasReportAsync("Libro de ventas", from, to, search, customerId, status),
             "libro-compras" => await BuildComprasReportAsync("Libro de compras", from, to, search, supplierId, status),
             _ => await BuildFlujoCajaAsync("Flujo de caja", from, to, search)
@@ -95,14 +96,14 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
             Title = title,
             Company = await GetCompanyAsync(),
             Filters = new ReportFilterViewModel { From = from, To = to, Search = search, CustomerId = customerId, Status = status },
-            Rows = await query.OrderByDescending(x => x.Date).Select(x => new ReportRowViewModel
+            Rows = (await query.OrderByDescending(x => x.Date).ToListAsync()).Select(x => new ReportRowViewModel
             {
                 Date = x.Date.ToString("dd/MM/yyyy"),
                 Main = x.Number,
                 Secondary = $"{x.Customer!.Name} / Saldo {x.BalanceDue:N2}",
-                Status = x.Status.ToString(),
+                Status = x.Status.GetDisplayName(),
                 Amount = x.Total
-            }).ToListAsync()
+            }).ToList()
         };
     }
 
@@ -117,14 +118,14 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
             query = query.Where(x => x.Number.Contains(search) || x.Supplier!.Name.Contains(search));
         }
 
-        var rows = await query.OrderByDescending(x => x.Date).SelectMany(x => x.Items.Select(item => new ReportRowViewModel
+        var rows = (await query.OrderByDescending(x => x.Date).ToListAsync()).SelectMany(x => x.Items.Select(item => new ReportRowViewModel
         {
             Date = x.Date.ToString("dd/MM/yyyy"),
             Main = x.Supplier!.Name,
             Secondary = $"{item.ProductService!.Name} / Cant. {item.Quantity:N2}",
-            Status = x.Status.ToString(),
+            Status = x.Status.GetDisplayName(),
             Amount = item.Total
-        })).ToListAsync();
+        })).ToList();
 
         return new ReportResultViewModel
         {
@@ -150,14 +151,14 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
             Title = title,
             Company = await GetCompanyAsync(),
             Filters = new ReportFilterViewModel { From = from, To = to, Search = search, CustomerId = customerId },
-            Rows = await invoices.OrderByDescending(x => x.Date).Select(x => new ReportRowViewModel
+            Rows = (await invoices.OrderByDescending(x => x.Date).ToListAsync()).Select(x => new ReportRowViewModel
             {
                 Date = x.Date.ToString("dd/MM/yyyy"),
                 Main = x.Customer!.Name,
                 Secondary = $"Factura {x.Number} / {GetAgeRange(x.Date)}",
-                Status = x.Status.ToString(),
+                Status = x.Status.GetDisplayName(),
                 Amount = x.BalanceDue
-            }).ToListAsync()
+            }).ToList()
         };
     }
 
@@ -176,14 +177,14 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
             Title = title,
             Company = await GetCompanyAsync(),
             Filters = new ReportFilterViewModel { From = from, To = to, Search = search, SupplierId = supplierId },
-            Rows = await invoices.OrderByDescending(x => x.Date).Select(x => new ReportRowViewModel
+            Rows = (await invoices.OrderByDescending(x => x.Date).ToListAsync()).Select(x => new ReportRowViewModel
             {
                 Date = x.Date.ToString("dd/MM/yyyy"),
                 Main = x.Purchase!.Supplier!.Name,
                 Secondary = $"Factura proveedor {x.Number} / {GetAgeRange(x.Date)}",
-                Status = x.Status.ToString(),
+                Status = x.Status.GetDisplayName(),
                 Amount = x.Total
-            }).ToListAsync()
+            }).ToList()
         };
     }
 
@@ -209,14 +210,14 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
             Title = title,
             Company = await GetCompanyAsync(),
             Filters = new ReportFilterViewModel { From = from, To = to, Search = search, CustomerId = customerId },
-            Rows = await query.OrderByDescending(x => x.Date).Select(x => new ReportRowViewModel
+            Rows = (await query.OrderByDescending(x => x.Date).ToListAsync()).Select(x => new ReportRowViewModel
             {
                 Date = x.Date.ToString("dd/MM/yyyy"),
                 Main = x.Invoice!.Customer!.Name,
                 Secondary = $"Nota {x.Number} / Factura {x.Invoice.Number}",
-                Status = x.Status.ToString(),
+                Status = x.Status.GetDisplayName(),
                 Amount = x.Total
-            }).ToListAsync()
+            }).ToList()
         };
     }
 
@@ -256,9 +257,9 @@ public class ReportesController(AppDbContext context, PdfReportService pdfReport
     private static string GetAgeRange(DateTime date)
     {
         var days = (DateTime.Today - date.Date).Days;
-        if (days <= 30) return "0-30 dias";
-        if (days <= 60) return "31-60 dias";
-        return "61+ dias";
+        if (days <= 30) return "0-30 días";
+        if (days <= 60) return "31-60 días";
+        return "61+ días";
     }
 
     private async Task<CompanyHeaderViewModel> GetCompanyAsync()

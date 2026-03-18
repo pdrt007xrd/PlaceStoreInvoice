@@ -49,11 +49,13 @@ public class InvoicePdfItemViewModel
 public class InvoicePdfViewModel
 {
     public CompanyHeaderViewModel Company { get; set; } = new();
+    public string DocumentTitle { get; set; } = "Factura";
     public string Number { get; set; } = string.Empty;
     public string Date { get; set; } = string.Empty;
     public string Customer { get; set; } = string.Empty;
     public string CustomerTaxId { get; set; } = string.Empty;
     public string CustomerAddress { get; set; } = string.Empty;
+    public string CustomerPhone { get; set; } = string.Empty;
     public string PaymentMethod { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
     public decimal Total { get; set; }

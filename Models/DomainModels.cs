@@ -4,24 +4,35 @@ namespace Ventas.Models;
 
 public enum PaymentMethod
 {
+    [Display(Name = "Efectivo")]
     Cash = 1,
+    [Display(Name = "Transferencia")]
     Transfer = 2
 }
 
 public enum DocumentStatus
 {
+    [Display(Name = "Borrador")]
     Draft = 1,
+    [Display(Name = "Aprobado")]
     Approved = 2,
+    [Display(Name = "Rechazado")]
     Rejected = 3,
+    [Display(Name = "Emitido")]
     Issued = 4,
+    [Display(Name = "Cancelado")]
     Cancelled = 5,
+    [Display(Name = "Pagado parcialmente")]
     PartiallyPaid = 6,
+    [Display(Name = "Pagado")]
     Paid = 7
 }
 
 public enum AccountType
 {
+    [Display(Name = "Caja")]
     Cash = 1,
+    [Display(Name = "Banco")]
     Bank = 2
 }
 
@@ -93,6 +104,9 @@ public class Customer : BaseEntity
 
     [StringLength(250)]
     public string Address { get; set; } = string.Empty;
+
+    [StringLength(50)]
+    public string Phone { get; set; } = string.Empty;
 
     public PaymentMethod PaymentMethod { get; set; }
 }

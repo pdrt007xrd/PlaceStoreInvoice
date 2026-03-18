@@ -8,7 +8,7 @@ using Ventas.Models;
 namespace Ventas.Controllers;
 
 [Authorize(Policy = "AdminOrOperador")]
-public class TesoreriaController(AppDbContext context) : Controller
+public class TesoreriaController(AppDbContext context, ILogger<TesoreriaController> logger) : Controller
 {
     public async Task<IActionResult> Cobros()
         => View("Cobros/Cobros", await context.Receipts.Include(x => x.Customer).Include(x => x.Invoice).OrderByDescending(x => x.Date).ToListAsync());
@@ -70,6 +70,8 @@ public class TesoreriaController(AppDbContext context) : Controller
         invoice.Status = invoice.BalanceDue <= 0 ? DocumentStatus.Paid : DocumentStatus.PartiallyPaid;
         await RegisterMovementAsync("Ingreso por cobro", model.Amount);
         await context.SaveChangesAsync();
+        logger.LogInformation("Cobro registrado correctamente. Id={ReceiptId}, FacturaId={InvoiceId}, ClienteId={CustomerId}, Monto={Amount}", model.Id, model.InvoiceId, model.CustomerId, model.Amount);
+        TempData["ToastMessage"] = "Cobro registrado correctamente.";
         return RedirectToAction(nameof(Cobros));
     }
 
@@ -95,6 +97,8 @@ public class TesoreriaController(AppDbContext context) : Controller
         context.SupplierPayments.Add(model);
         await RegisterMovementAsync("Egreso por pago a proveedor", -model.Amount);
         await context.SaveChangesAsync();
+        logger.LogInformation("Pago a proveedor registrado correctamente. Id={SupplierPaymentId}, ProveedorId={SupplierId}, Monto={Amount}", model.Id, model.SupplierId, model.Amount);
+        TempData["ToastMessage"] = "Pago a proveedor registrado correctamente.";
         return RedirectToAction(nameof(PagosProveedores));
     }
 
@@ -128,6 +132,8 @@ public class TesoreriaController(AppDbContext context) : Controller
         }
 
         await context.SaveChangesAsync();
+        logger.LogInformation("Movimiento de caja o banco registrado correctamente. Id={MovementId}, CuentaId={AccountId}, Monto={Amount}", model.Id, model.CashBankAccountId, model.Amount);
+        TempData["ToastMessage"] = "Movimiento de caja o banco registrado correctamente.";
         return RedirectToAction(nameof(CajaBancos));
     }
 

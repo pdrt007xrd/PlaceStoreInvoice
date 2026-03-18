@@ -96,8 +96,8 @@ public class PdfReportService
                         column.Item().Text(model.Company.Address);
                     }
                     column.Item().Text($"{model.Company.Phone} {model.Company.Email}".Trim());
-                    column.Item().PaddingTop(10).Text($"Factura {model.Number}").Bold().FontSize(16);
-                    column.Item().Text($"Fecha de creacion: {model.Date}");
+                    column.Item().PaddingTop(10).Text($"{model.DocumentTitle} {model.Number}").Bold().FontSize(16);
+                    column.Item().Text($"Fecha de creación: {model.Date}");
                 });
 
                 page.Content().Column(column =>
@@ -110,9 +110,13 @@ public class PdfReportService
                     }
                     if (!string.IsNullOrWhiteSpace(model.CustomerAddress))
                     {
-                        column.Item().Text($"Direccion: {model.CustomerAddress}");
+                        column.Item().Text($"Dirección: {model.CustomerAddress}");
                     }
-                    column.Item().Text($"Metodo de pago: {model.PaymentMethod}");
+                    if (!string.IsNullOrWhiteSpace(model.CustomerPhone))
+                    {
+                        column.Item().Text($"Teléfono: {model.CustomerPhone}");
+                    }
+                    column.Item().Text($"Método de pago: {model.PaymentMethod}");
                     column.Item().Text($"Estado: {model.Status}");
 
                     column.Item().Table(table =>

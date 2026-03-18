@@ -9,11 +9,18 @@
     </div>
     <div class="table-wrap">
         <table class="table table-striped datatable">
-            <thead><tr><th>Nombre</th><th>RNC / Cedula</th><th>Direccion</th><th>Forma de pago</th></tr></thead>
+            <thead><tr><th>Nombre</th><th>RNC / Cédula</th><th>Dirección</th><th>Teléfono</th><th>Forma de pago</th><th>Acciones</th></tr></thead>
             <tbody>
             @foreach (var item in Model)
             {
-                <tr><td>@item.Name</td><td>@item.TaxId</td><td>@item.Address</td><td>@item.PaymentMethod</td></tr>
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.TaxId</td>
+                    <td>@item.Address</td>
+                    <td>@item.Phone</td>
+                    <td>@item.PaymentMethod.GetDisplayName()</td>
+                    <td><a class="btn btn-sm btn-outline-secondary" asp-action="EditarCliente" asp-route-id="@item.Id">Editar</a></td>
+                </tr>
             }
             </tbody>
         </table>

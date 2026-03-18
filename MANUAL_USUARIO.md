@@ -2,31 +2,31 @@
 
 ## Place Store Invoice
 
-Este manual explica el flujo de uso del sistema actual para operar clientes, productos, compras, ventas, tesoreria, reportes y configuracion.
+Este manual explica el flujo de uso del sistema actual para operar clientes, productos, compras, ventas, tesorería, reportes y configuración.
 
 ## 1. Acceso al sistema
 
 1. Abra la aplicacion en el navegador.
-2. En la pantalla de inicio de sesion escriba:
+2. En la pantalla de inicio de sesión escriba:
    Usuario: `admin`
-   Contrasena: `Admin123*`
+   Contraseña: `Admin123*`
 3. Presione `Entrar al sistema`.
 
 Notas:
-- La sesion caduca luego de 15 minutos sin uso.
-- Si ya tiene una sesion activa, el sistema puede entrar directo al dashboard.
-- Para salir, use el boton `Salir` en la parte superior.
+- La sesión caduca luego de 15 minutos sin uso.
+- Si ya tiene una sesión activa, el sistema puede entrar directo al inicio.
+- Para salir, use el botón `Salir` en la parte superior.
 
-## 2. Configuracion inicial recomendada
+## 2. Configuración inicial recomendada
 
 Antes de facturar, se recomienda completar estos pasos:
 
-1. Ir a `Configuracion > Empresa`.
+1. Ir a `Configuración > Empresa`.
 2. Registrar o actualizar:
-   Razon social
-   RNC o cedula
-   Direccion
-   Telefono
+   Razón social
+   RNC o cédula
+   Dirección
+   Teléfono
    Correo
    Logo URL si aplica
    Moneda
@@ -34,11 +34,11 @@ Antes de facturar, se recomienda completar estos pasos:
 
 Importante:
 - Estos datos aparecen como cabecera en los reportes.
-- Estos datos tambien aparecen en el PDF de las facturas.
+- Estos datos también aparecen en el PDF de las facturas y cotizaciones.
 
-## 3. Dashboard
+## 3. Inicio
 
-El `Dashboard` muestra:
+La pantalla de inicio muestra:
 - Cantidad de clientes
 - Cantidad de proveedores
 - Cantidad de productos
@@ -47,7 +47,7 @@ El `Dashboard` muestra:
 - Ventas del dia
 - Compras del dia
 - Balance de caja y bancos
-- Alertas rapidas
+- Alertas rápidas
 - Accesos directos a procesos frecuentes
 
 ## 4. Maestros
@@ -63,10 +63,17 @@ Para crear un cliente:
 1. Presione `Nuevo cliente`.
 2. Complete:
    Nombre
-   RNC o cedula
-   Direccion
+   RNC o cédula
+   Dirección
+   Teléfono
    Forma de pago
 3. Presione `Guardar`.
+
+Para editar un cliente:
+1. Entre a `Maestros > Clientes`.
+2. En el listado presione `Editar`.
+3. Modifique los datos necesarios.
+4. Presione `Guardar cambios`.
 
 Uso:
 - Los clientes se usan en cotizaciones, facturas, cobros y reportes.
@@ -80,10 +87,10 @@ Para crear un proveedor:
 1. Presione `Nuevo proveedor`.
 2. Complete:
    Nombre
-   RNC o cedula
-   Direccion
+   RNC o cédula
+   Dirección
    Contacto
-   Telefono
+   Teléfono
    Correo
 3. Presione `Guardar`.
 
@@ -167,10 +174,10 @@ Uso:
 Ruta:
 `Ventas > Cotizaciones`
 
-Para crear una cotizacion:
+Para crear una cotización:
 1. Presione `Nueva cotizacion`.
 2. Complete:
-   Numero
+   Número
    Fecha
    Cliente
    Estado
@@ -185,6 +192,13 @@ Para crear una cotizacion:
 Uso:
 - Sirve como documento previo a la factura.
 
+Flujo disponible desde el listado:
+1. En `Ventas > Cotizaciones` verá todas las cotizaciones registradas.
+2. Puede usar `PDF` para abrir e imprimir la cotización.
+3. Puede usar `Facturar` para convertir la cotización en una factura.
+4. Al facturar, el sistema crea una factura nueva con el mismo cliente, forma de pago, productos, cantidades y precios de la cotización.
+5. Luego del proceso, el sistema abre la pantalla de factura emitida para imprimirla o registrar su cobro.
+
 ## 6.2 Facturas
 
 Ruta:
@@ -193,28 +207,28 @@ Ruta:
 Para crear una factura:
 1. Presione `Nueva factura`.
 2. Complete:
-   Numero
+   Número
    Cliente
    Estado
    Forma de pago
-3. La fecha de creacion la asigna el sistema automaticamente.
-4. En el detalle puede trabajar con varias lineas.
+3. La fecha de creación la asigna el sistema automáticamente.
+4. En el detalle puede trabajar con varias líneas.
 5. En cada linea complete:
    Producto o servicio
    Cantidad
    Precio
-6. Use `Agregar linea` si necesita mas productos.
-7. Puede quitar lineas con el boton `Quitar`.
+6. Use `Agregar linea` si necesita más productos.
+7. Puede quitar lineas con el botón `Quitar`.
 8. Presione `Guardar e imprimir factura`.
 9. El sistema muestra una pantalla posterior con:
    vista previa del PDF
-   boton para reimprimir
-   boton para registrar cobro
-   boton para crear otra factura
-   boton para volver al listado
+   botón para reimprimir
+   botón para registrar cobro
+   botón para crear otra factura
+   botón para volver al listado
 
 Importante:
-- La fecha de creacion de la factura no se puede modificar manualmente.
+- La fecha de creación de la factura no se puede modificar manualmente.
 - El sistema la guarda en el momento real de la creacion.
 - Luego de guardar la factura, el flujo principal abre el PDF inline para impresion directa.
 - El cliente y los productos admiten autocompletado por nombre mientras escribe.
@@ -228,10 +242,10 @@ Desde el listado de facturas:
    Estado
    Forma de pago
    Detalle
-3. No puede cambiar la fecha de creacion.
+3. No puede cambiar la fecha de creación.
 4. Presione `Guardar cambios`.
 
-Restriccion importante:
+Restricción importante:
 - Si la factura ya tiene cobros registrados o notas de credito, el sistema bloquea su edicion para proteger el saldo y la auditoria.
 
 ### Ver factura en PDF
@@ -265,22 +279,26 @@ Comportamiento actual:
 - Si la nota consume todo el saldo, la factura queda cancelada.
 - Si reduce solo una parte, la factura queda con saldo parcial.
 
-## 7. Tesoreria
+## 7. Tesorería
 
 ## 7.1 Cobros
 
 Ruta:
-`Tesoreria > Cobros`
+`Tesorería > Cobros`
 
 Para registrar un cobro:
 1. Presione `Nuevo cobro`.
 2. Complete:
    Fecha
    Factura
-   Metodo
+   Método
    Monto
    Referencia
 3. Presione `Guardar cobro`.
+
+Detalle del campo `Referencia`:
+- Se usa para guardar el dato que identifica el pago.
+- Puede ser número de transferencia, número de cheque, número de recibo, autorización o una nota corta como `Pago en efectivo`.
 
 Que ocurre al guardar:
 - Se registra el cobro.
@@ -290,18 +308,25 @@ Que ocurre al guardar:
 - Si el saldo llega a cero, la factura queda pagada.
 - Si el saldo no llega a cero, la factura queda parcialmente pagada.
 - Se genera un movimiento positivo en caja o bancos.
+- El sistema muestra un mensaje de confirmación en pantalla.
+
+Flujo recomendado:
+1. Crear la factura o convertir una cotización en factura.
+2. Desde la pantalla de factura emitida o desde el listado de facturas, presione `Registrar cobro` o `Cobrar`.
+3. Verifique la factura, el saldo pendiente y el monto.
+4. Guarde el cobro.
 
 ## 7.2 Pagos a proveedores
 
 Ruta:
-`Tesoreria > Pagos a proveedores`
+`Tesorería > Pagos a proveedores`
 
 Para registrar un pago:
 1. Presione `Nuevo pago`.
 2. Complete:
    Fecha
    Proveedor
-   Metodo
+   Método
    Monto
    Referencia
 3. Presione `Guardar pago`.
@@ -309,13 +334,14 @@ Para registrar un pago:
 Que ocurre al guardar:
 - Se registra el pago.
 - Se genera un movimiento negativo en caja o bancos.
+- El sistema muestra un mensaje de confirmación en pantalla.
 
 ## 7.3 Caja / Bancos
 
 Ruta:
 `Tesoreria > Caja / Bancos`
 
-Aqui puede:
+Aquí puede:
 - Ver cuentas registradas
 - Ver el balance de cada cuenta
 - Crear movimientos manuales
@@ -325,7 +351,7 @@ Para crear un movimiento manual:
 2. Complete:
    Fecha
    Cuenta
-   Descripcion
+   Descripción
    Monto
 3. Presione `Guardar movimiento`.
 
@@ -338,15 +364,15 @@ Notas:
 Todos los reportes:
 - cargan en pantalla
 - permiten filtrar por fecha
-- tienen campo de busqueda
+- tienen campo de búsqueda
 - permiten autocompletar nombres al escribir en la busqueda cuando aplica
 - se pueden ordenar y paginar
-- incluyen boton para ver PDF en el navegador
+- incluyen botón para ver PDF en el navegador
 
 Adicionalmente:
 - Algunos reportes permiten filtrar por cliente
 - Algunos permiten filtrar por proveedor
-- Los reportes de ventas y compras tambien admiten filtro por estado
+- Los reportes de ventas y compras también admiten filtro por estado
 
 ## 8.1 Reporte de ventas
 
@@ -457,18 +483,26 @@ Este es el flujo recomendado para usar el sistema desde cero:
 4. Crear proveedores.
 5. Crear productos y servicios.
 6. Registrar compras y definir ganancia fija por compra cuando aplique.
-7. Emitir cotizaciones si el cliente requiere aprobacion previa.
-8. Emitir facturas.
-9. Registrar notas de credito cuando sea necesario ajustar una venta.
-10. Registrar cobros de clientes.
-11. Registrar pagos a proveedores.
+7. Emitir cotizaciones si el cliente requiere aprobación previa.
+8. Imprimir la cotización o convertirla en factura desde el listado.
+9. Emitir facturas directas cuando no se necesite cotización previa.
+10. Registrar notas de crédito cuando sea necesario ajustar una venta.
+11. Registrar cobros de clientes.
+12. Registrar pagos a proveedores.
 12. Revisar caja y bancos.
 13. Consultar reportes y abrir PDF en el navegador.
+
+Flujo resumido de cliente a cobro:
+1. Crear el cliente en `Maestros > Clientes`.
+2. Crear una cotización en `Ventas > Cotizaciones` si aplica.
+3. Imprimir la cotización o convertirla en factura.
+4. Emitir la factura.
+5. Registrar el cobro desde la factura o desde `Tesorería > Cobros`.
 
 ## 11. Observaciones importantes del sistema actual
 
 - Las facturas tienen fecha de creacion automatica y no editable.
-- Los reportes PDF y las facturas PDF se abren en el navegador.
+- Los reportes PDF, las facturas PDF y las cotizaciones PDF se abren en el navegador.
 - El precio de venta puede actualizarse desde compras usando ganancia fija por linea.
 - Los cobros ahora se registran contra una factura especifica.
 - Las notas de credito reducen el saldo pendiente de la factura relacionada.
@@ -478,7 +512,7 @@ Este es el flujo recomendado para usar el sistema desde cero:
 
 ## 12. Soporte
 
-Pie de pagina del sistema:
+Pie de página del sistema:
 `Desarrollado por DevTechRD 829-966-1111`
 
-Tambien puede usar el boton de WhatsApp visible en el sistema.
+Tambien puede usar el botón de WhatsApp visible en el sistema.

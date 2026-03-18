@@ -1,6 +1,6 @@
 @model CreditNote
 @{
-    ViewData["Title"] = "Nueva nota de credito";
+    ViewData["Title"] = "Nueva nota de crédito";
     var rows = Model.Items?.Any() == true ? Model.Items.ToList() : new List<CreditNoteItem> { new() { Quantity = 1 } };
 }
 <section class="panel-card">
@@ -34,9 +34,9 @@
                 </div>
             }
         </div>
-        <button type="button" class="btn btn-outline-primary add-item-row" data-target="#creditnote-items" data-template="#credit-note-template">Agregar linea</button>
+        <button type="button" class="btn btn-outline-primary add-item-row" data-target="#creditnote-items" data-template="#credit-note-template">Agregar línea</button>
         <div class="mt-4 d-flex gap-2">
-            <button class="btn btn-primary" type="submit">Guardar nota de credito</button>
+            <button class="btn btn-primary" type="submit">Guardar nota de crédito</button>
             <a class="btn btn-outline-secondary" asp-action="NotasCredito">Volver</a>
         </div>
     </form>

@@ -8,11 +8,11 @@
         <a class="btn btn-primary" asp-action="CrearPagoProveedor">Nuevo pago</a>
     </div>
     <table class="table table-striped datatable">
-        <thead><tr><th>Fecha</th><th>Proveedor</th><th>Metodo</th><th>Referencia</th><th>Monto</th></tr></thead>
+        <thead><tr><th>Fecha</th><th>Proveedor</th><th>Método</th><th>Referencia</th><th>Monto</th></tr></thead>
         <tbody>
         @foreach (var item in Model)
         {
-            <tr><td>@item.Date.ToString("dd/MM/yyyy")</td><td>@item.Supplier?.Name</td><td>@item.PaymentMethod</td><td>@item.Reference</td><td>@item.Amount.ToString("N2")</td></tr>
+            <tr><td>@item.Date.ToString("dd/MM/yyyy")</td><td>@item.Supplier?.Name</td><td>@item.PaymentMethod.GetDisplayName()</td><td>@item.Reference</td><td>@item.Amount.ToString("N2")</td></tr>
         }
         </tbody>
     </table>

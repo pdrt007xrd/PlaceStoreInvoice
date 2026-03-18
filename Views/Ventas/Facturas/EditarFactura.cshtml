@@ -11,9 +11,9 @@
         <input type="hidden" asp-for="Date" />
         <input type="hidden" asp-for="CustomerId" id="CustomerId" />
         <div class="row g-3">
-            <div class="col-md-3"><label class="form-label">Numero</label><input class="form-control" value="@Model.Number" readonly /></div>
-            <div class="col-md-3"><label class="form-label">Fecha de creacion</label><input class="form-control" value="@Model.Date.ToString("dd/MM/yyyy HH:mm")" readonly /></div>
-            <div class="col-md-3"><label class="form-label">Cliente</label><input class="form-control autocomplete-input" list="customers-list" value="@customerName" data-hidden-target="CustomerId" /></div>
+            <div class="col-md-3"><label class="form-label">Número</label><input class="form-control" value="@Model.Number" readonly /></div>
+            <div class="col-md-3"><label class="form-label">Fecha de creación</label><input class="form-control" value="@Model.Date.ToString("dd/MM/yyyy HH:mm")" readonly /></div>
+            <div class="col-md-3"><label class="form-label">Cliente</label><input class="form-control autocomplete-input" list="customers-list" value="@customerName" data-hidden-target="CustomerId" placeholder="Escriba para buscar un cliente" autocomplete="off" /></div>
             <div class="col-md-3"><label class="form-label" asp-for="Status">Estado</label><select class="form-select" asp-for="Status" asp-items="Html.GetEnumSelectList<DocumentStatus>()"></select></div>
             <div class="col-md-4"><label class="form-label" asp-for="PaymentMethod">Forma de pago</label><select class="form-select" asp-for="PaymentMethod" asp-items="Html.GetEnumSelectList<PaymentMethod>()"></select></div>
         </div>
@@ -45,7 +45,7 @@
                 </div>
             }
         </div>
-        <button type="button" class="btn btn-outline-primary add-item-row" data-target="#invoice-items" data-template="#invoice-item-template">Agregar linea</button>
+        <button type="button" class="btn btn-outline-primary add-item-row" data-target="#invoice-items" data-template="#invoice-item-template">Agregar línea</button>
         <div class="mt-4 d-flex gap-2">
             <button class="btn btn-primary" type="submit">Guardar cambios</button>
             <a class="btn btn-outline-secondary" asp-action="Facturas">Volver</a>

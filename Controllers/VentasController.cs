@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Ventas.Data;
+using Ventas.Extensions;
 using Ventas.Models;
 using Ventas.Services;
 using Ventas.ViewModels;
@@ -10,12 +11,100 @@ using Ventas.ViewModels;
 namespace Ventas.Controllers;
 
 [Authorize(Policy = "AdminOrOperador")]
-public class VentasController(AppDbContext context, PdfReportService pdfReportService) : Controller
+public class VentasController(AppDbContext context, PdfReportService pdfReportService, ILogger<VentasController> logger) : Controller
 {
     public async Task<IActionResult> Cotizaciones()
     {
         var data = await context.Quotes.Include(x => x.Customer).OrderByDescending(x => x.Date).ToListAsync();
         return View("Cotizaciones/Cotizaciones", data);
+    }
+
+    [HttpGet]
+    public async Task<FileResult> ImprimirCotizacion(int id)
+    {
+        var quote = await context.Quotes
+            .Include(x => x.Customer)
+            .Include(x => x.Items)
+            .ThenInclude(x => x.ProductService)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (quote is null)
+        {
+            throw new InvalidOperationException("Cotización no encontrada.");
+        }
+
+        var company = await context.Companies.OrderBy(x => x.Id).FirstOrDefaultAsync();
+        var document = new InvoicePdfViewModel
+        {
+            Company = new CompanyHeaderViewModel
+            {
+                BusinessName = company?.BusinessName ?? string.Empty,
+                TaxId = company?.TaxId ?? string.Empty,
+                Address = company?.Address ?? string.Empty,
+                Phone = company?.Phone ?? string.Empty,
+                Email = company?.Email ?? string.Empty
+            },
+            DocumentTitle = "Cotización",
+            Number = quote.Number,
+            Date = quote.Date.ToString("dd/MM/yyyy HH:mm"),
+            Customer = quote.Customer?.Name ?? string.Empty,
+            CustomerTaxId = quote.Customer?.TaxId ?? string.Empty,
+            CustomerAddress = quote.Customer?.Address ?? string.Empty,
+            CustomerPhone = quote.Customer?.Phone ?? string.Empty,
+            PaymentMethod = quote.PaymentMethod.GetDisplayName(),
+            Status = quote.Status.GetDisplayName(),
+            Total = quote.Total,
+            Items = quote.Items.Select(x => new InvoicePdfItemViewModel
+            {
+                Product = x.ProductService?.Name ?? string.Empty,
+                Quantity = x.Quantity,
+                UnitPrice = x.UnitPrice,
+                Total = x.Total
+            }).ToList()
+        };
+
+        var bytes = pdfReportService.GenerateInvoice(document);
+        Response.Headers.ContentDisposition = $"inline; filename=cotizacion-{quote.Number}.pdf";
+        return File(bytes, "application/pdf");
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> FacturarCotizacion(int id)
+    {
+        var quote = await context.Quotes
+            .Include(x => x.Items)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (quote is null)
+        {
+            TempData["Error"] = "La cotización seleccionada no existe.";
+            return RedirectToAction(nameof(Cotizaciones));
+        }
+
+        var invoice = new Invoice
+        {
+            Number = $"FAC-{DateTime.Now:yyyyMMddHHmmss}",
+            Date = DateTime.Now,
+            CustomerId = quote.CustomerId,
+            PaymentMethod = quote.PaymentMethod,
+            Status = DocumentStatus.Issued,
+            Total = quote.Total,
+            BalanceDue = quote.Total,
+            Items = quote.Items.Select(x => new InvoiceItem
+            {
+                ProductServiceId = x.ProductServiceId,
+                Quantity = x.Quantity,
+                UnitPrice = x.UnitPrice,
+                Total = x.Total
+            }).ToList()
+        };
+
+        context.Invoices.Add(invoice);
+        await context.SaveChangesAsync();
+        logger.LogInformation("Cotización convertida en factura. QuoteId={QuoteId}, InvoiceId={InvoiceId}, NumeroFactura={InvoiceNumber}", quote.Id, invoice.Id, invoice.Number);
+        TempData["ToastMessage"] = "Cotización convertida en factura correctamente.";
+        return RedirectToAction(nameof(FacturaEmitida), new { id = invoice.Id });
     }
 
     [HttpGet]
@@ -45,6 +134,8 @@ public class VentasController(AppDbContext context, PdfReportService pdfReportSe
         model.Total = model.Items.Sum(x => x.Total);
         context.Quotes.Add(model);
         await context.SaveChangesAsync();
+        logger.LogInformation("Cotización creada correctamente. Id={QuoteId}, Numero={QuoteNumber}, ClienteId={CustomerId}", model.Id, model.Number, model.CustomerId);
+        TempData["ToastMessage"] = "Cotización creada correctamente.";
         return RedirectToAction(nameof(Cotizaciones));
     }
 
@@ -88,6 +179,8 @@ public class VentasController(AppDbContext context, PdfReportService pdfReportSe
         model.BalanceDue = model.Total;
         context.Invoices.Add(model);
         await context.SaveChangesAsync();
+        logger.LogInformation("Factura creada correctamente. Id={InvoiceId}, Numero={InvoiceNumber}, ClienteId={CustomerId}, Total={Total}", model.Id, model.Number, model.CustomerId, model.Total);
+        TempData["ToastMessage"] = "Factura creada correctamente.";
         return RedirectToAction(nameof(FacturaEmitida), new { id = model.Id });
     }
 
@@ -131,7 +224,7 @@ public class VentasController(AppDbContext context, PdfReportService pdfReportSe
 
         if (invoice.Receipts.Any() || invoice.CreditNotes.Any())
         {
-            TempData["Error"] = "No se puede editar una factura que ya tiene cobros o notas de credito.";
+            TempData["Error"] = "No se puede editar una factura que ya tiene cobros o notas de crédito.";
             return RedirectToAction(nameof(Facturas));
         }
 
@@ -155,7 +248,7 @@ public class VentasController(AppDbContext context, PdfReportService pdfReportSe
 
         if (invoice.Receipts.Any() || invoice.CreditNotes.Any())
         {
-            TempData["Error"] = "No se puede editar una factura que ya tiene cobros o notas de credito.";
+            TempData["Error"] = "No se puede editar una factura que ya tiene cobros o notas de crédito.";
             return RedirectToAction(nameof(Facturas));
         }
 
@@ -184,6 +277,8 @@ public class VentasController(AppDbContext context, PdfReportService pdfReportSe
         invoice.Items = model.Items;
 
         await context.SaveChangesAsync();
+        logger.LogInformation("Factura actualizada correctamente. Id={InvoiceId}, Numero={InvoiceNumber}, ClienteId={CustomerId}, Total={Total}", invoice.Id, invoice.Number, invoice.CustomerId, invoice.Total);
+        TempData["ToastMessage"] = "Factura actualizada correctamente.";
         return RedirectToAction(nameof(Facturas));
     }
 
@@ -212,13 +307,15 @@ public class VentasController(AppDbContext context, PdfReportService pdfReportSe
                 Phone = company?.Phone ?? string.Empty,
                 Email = company?.Email ?? string.Empty
             },
+            DocumentTitle = "Factura",
             Number = invoice.Number,
             Date = invoice.Date.ToString("dd/MM/yyyy HH:mm"),
             Customer = invoice.Customer?.Name ?? string.Empty,
             CustomerTaxId = invoice.Customer?.TaxId ?? string.Empty,
             CustomerAddress = invoice.Customer?.Address ?? string.Empty,
-            PaymentMethod = invoice.PaymentMethod.ToString(),
-            Status = invoice.Status.ToString(),
+            CustomerPhone = invoice.Customer?.Phone ?? string.Empty,
+            PaymentMethod = invoice.PaymentMethod.GetDisplayName(),
+            Status = invoice.Status.GetDisplayName(),
             Total = invoice.Total,
             Items = invoice.Items.Select(x => new InvoicePdfItemViewModel
             {
@@ -280,7 +377,7 @@ public class VentasController(AppDbContext context, PdfReportService pdfReportSe
 
         if (model.Total <= 0 || model.Total > invoice.BalanceDue)
         {
-            ModelState.AddModelError("Total", "La nota de credito no puede exceder el saldo pendiente de la factura.");
+            ModelState.AddModelError("Total", "La nota de crédito no puede exceder el saldo pendiente de la factura.");
             ViewBag.Invoices = new SelectList(await context.Invoices.Where(x => x.BalanceDue > 0).OrderByDescending(x => x.Date).ToListAsync(), "Id", "Number");
             ViewBag.Products = new SelectList(await context.ProductServices.OrderBy(x => x.Name).ToListAsync(), "Id", "Name");
             ViewBag.ProductsData = await context.ProductServices.OrderBy(x => x.Name).ToListAsync();
@@ -291,6 +388,8 @@ public class VentasController(AppDbContext context, PdfReportService pdfReportSe
         invoice.Status = invoice.BalanceDue <= 0 ? DocumentStatus.Cancelled : DocumentStatus.PartiallyPaid;
         context.CreditNotes.Add(model);
         await context.SaveChangesAsync();
+        logger.LogInformation("Nota de crédito creada correctamente. Id={CreditNoteId}, Numero={CreditNoteNumber}, FacturaId={InvoiceId}, Total={Total}", model.Id, model.Number, model.InvoiceId, model.Total);
+        TempData["ToastMessage"] = "Nota de crédito creada correctamente.";
         return RedirectToAction(nameof(NotasCredito));
     }
 

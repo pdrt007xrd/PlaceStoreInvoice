@@ -1,14 +1,14 @@
 @model Ventas.ViewModels.DashboardViewModel
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Inicio";
 }
 
 <section class="hero-card">
     <div class="row align-items-center">
         <div class="col-lg-8">
-            <div class="small text-uppercase opacity-75">Resumen del dia</div>
-            <h2 class="mt-2">Controla ventas, compras, tesoreria y reportes desde un solo panel.</h2>
-            <p class="mb-0 opacity-75">Sesion protegida, datos centralizados y reportes listos para imprimir en PDF.</p>
+            <div class="small text-uppercase opacity-75">Resumen del día</div>
+            <h2 class="mt-2">Controla ventas, compras, tesorería y reportes desde un solo panel.</h2>
+            <p class="mb-0 opacity-75">Sesión protegida, datos centralizados y reportes listos para imprimir en PDF.</p>
         </div>
         <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
             <div class="h3 mb-0">@DateTime.Now.ToString("dd/MM/yyyy")</div>
@@ -56,7 +56,7 @@
     <div class="col-lg-7">
         <section class="panel-card">
             <div class="section-header">
-                <h3 class="h5 mb-0">Accesos rapidos</h3>
+                <h3 class="h5 mb-0">Accesos rápidos</h3>
             </div>
             <div class="quick-grid">
                 <a class="quick-link" asp-controller="Ventas" asp-action="CrearFactura">
@@ -64,7 +64,7 @@
                     <span>Registrar venta inmediata</span>
                 </a>
                 <a class="quick-link" asp-controller="Ventas" asp-action="CrearCotizacion">
-                    <strong>Nueva cotizacion</strong>
+                    <strong>Nueva cotización</strong>
                     <span>Preparar documento previo</span>
                 </a>
                 <a class="quick-link" asp-controller="Compras" asp-action="CrearRegistroCompra">

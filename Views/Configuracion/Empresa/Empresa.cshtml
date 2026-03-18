@@ -3,19 +3,15 @@
     ViewData["Title"] = "Empresa";
 }
 <section class="panel-card">
-    <div class="mb-3 text-muted">Los datos guardados aqui se usan como cabecera en reportes y en el PDF de facturas.</div>
-    @if (ViewBag.Message is string message)
-    {
-        <div class="alert alert-success">@message</div>
-    }
+    <div class="mb-3 text-muted">Los datos guardados aquí se usan como cabecera en reportes y en el PDF de facturas.</div>
     <form asp-action="Empresa" method="post">
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="CreatedAt" />
         <div class="row g-3">
-            <div class="col-md-6"><label class="form-label" asp-for="BusinessName">Razon social</label><input class="form-control" asp-for="BusinessName" /></div>
+            <div class="col-md-6"><label class="form-label" asp-for="BusinessName">Razón social</label><input class="form-control" asp-for="BusinessName" /></div>
             <div class="col-md-6"><label class="form-label" asp-for="TaxId">RNC</label><input class="form-control" asp-for="TaxId" /></div>
-            <div class="col-md-6"><label class="form-label" asp-for="Address">Direccion</label><input class="form-control" asp-for="Address" /></div>
-            <div class="col-md-3"><label class="form-label" asp-for="Phone">Telefono</label><input class="form-control" asp-for="Phone" /></div>
+            <div class="col-md-6"><label class="form-label" asp-for="Address">Dirección</label><input class="form-control" asp-for="Address" /></div>
+            <div class="col-md-3"><label class="form-label" asp-for="Phone">Teléfono</label><input class="form-control" asp-for="Phone" /></div>
             <div class="col-md-3"><label class="form-label" asp-for="Email">Correo</label><input class="form-control" asp-for="Email" /></div>
             <div class="col-md-4"><label class="form-label" asp-for="LogoUrl">Logo URL</label><input class="form-control" asp-for="LogoUrl" /></div>
             <div class="col-md-2"><label class="form-label" asp-for="DefaultCurrency">Moneda</label><input class="form-control" asp-for="DefaultCurrency" /></div>

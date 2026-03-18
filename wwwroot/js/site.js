@@ -26,6 +26,7 @@ $(function () {
             search: "Buscar:",
             lengthMenu: "Mostrar _MENU_ registros",
             info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            infoEmpty: "Mostrando 0 a 0 de 0 registros",
             paginate: {
                 previous: "Anterior",
                 next: "Siguiente"
@@ -119,4 +120,16 @@ $(function () {
 
         window.location.href = url.toString();
     });
+
+    const toast = document.querySelector("[data-toast]");
+    if (toast) {
+        requestAnimationFrame(() => {
+            toast.classList.add("is-visible");
+        });
+
+        window.setTimeout(() => {
+            toast.classList.remove("is-visible");
+            window.setTimeout(() => toast.parentElement?.remove(), 220);
+        }, 2600);
+    }
 });

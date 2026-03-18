@@ -45,6 +45,7 @@ public class ComprasController(AppDbContext context) : Controller
         }
 
         await context.SaveChangesAsync();
+        TempData["ToastMessage"] = "Compra registrada correctamente.";
         return RedirectToAction(nameof(RegistroCompras));
     }
 
@@ -74,6 +75,7 @@ public class ComprasController(AppDbContext context) : Controller
         model.Total = purchase?.Total ?? 0;
         context.SupplierInvoices.Add(model);
         await context.SaveChangesAsync();
+        TempData["ToastMessage"] = "Factura de proveedor creada correctamente.";
         return RedirectToAction(nameof(FacturasProveedor));
     }
 

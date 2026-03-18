@@ -1,13 +1,15 @@
 @{
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
+    var toastMessage = TempData["ToastMessage"]?.ToString();
+    var toastType = TempData["ToastType"]?.ToString() ?? "success";
 }
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Place Store</title>
+    <title>@ViewData["Title"] - Sistema de Ventas</title>
     <script type="importmap"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -31,7 +33,7 @@
                         </div>
                     </div>
                     <button class="btn sidebar-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-expanded="false" aria-controls="sidebarMenu">
-                        Menu
+                        Menú
                     </button>
                 </div>
 
@@ -45,7 +47,7 @@
                     </div>
 
                     <nav class="menu-group">
-                        <a class="menu-item @(currentController == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">Dashboard</a>
+                        <a class="menu-item @(currentController == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">Inicio</a>
 
                         @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
                         {
@@ -57,13 +59,13 @@
                             <div class="menu-title">Ventas</div>
                             <a class="menu-item @(currentAction == "Cotizaciones" ? "active" : "")" asp-controller="Ventas" asp-action="Cotizaciones">Cotizaciones</a>
                             <a class="menu-item @(currentAction == "Facturas" ? "active" : "")" asp-controller="Ventas" asp-action="Facturas">Facturas</a>
-                            <a class="menu-item @(currentAction == "NotasCredito" ? "active" : "")" asp-controller="Ventas" asp-action="NotasCredito">Notas de credito</a>
+                            <a class="menu-item @(currentAction == "NotasCredito" ? "active" : "")" asp-controller="Ventas" asp-action="NotasCredito">Notas de crédito</a>
 
                             <div class="menu-title">Compras</div>
                             <a class="menu-item @(currentAction == "RegistroCompras" ? "active" : "")" asp-controller="Compras" asp-action="RegistroCompras">Registro de compras</a>
                             <a class="menu-item @(currentAction == "FacturasProveedor" ? "active" : "")" asp-controller="Compras" asp-action="FacturasProveedor">Facturas de proveedor</a>
 
-                            <div class="menu-title">Tesoreria</div>
+                            <div class="menu-title">Tesorería</div>
                             <a class="menu-item @(currentAction == "Cobros" ? "active" : "")" asp-controller="Tesoreria" asp-action="Cobros">Cobros</a>
                             <a class="menu-item @(currentAction == "PagosProveedores" ? "active" : "")" asp-controller="Tesoreria" asp-action="PagosProveedores">Pagos a proveedores</a>
                             <a class="menu-item @(currentAction == "CajaBancos" ? "active" : "")" asp-controller="Tesoreria" asp-action="CajaBancos">Caja / Bancos</a>
@@ -74,14 +76,14 @@
                         <a class="menu-item @(currentAction == "Compras" ? "active" : "")" asp-controller="Reportes" asp-action="Compras">Compras</a>
                         <a class="menu-item @(currentAction == "CuentasPorCobrar" ? "active" : "")" asp-controller="Reportes" asp-action="CuentasPorCobrar">Cuentas por cobrar</a>
                         <a class="menu-item @(currentAction == "CuentasPorPagar" ? "active" : "")" asp-controller="Reportes" asp-action="CuentasPorPagar">Cuentas por pagar</a>
-                        <a class="menu-item @(currentAction == "NotasCredito" ? "active" : "")" asp-controller="Reportes" asp-action="NotasCredito">Notas de credito</a>
+                        <a class="menu-item @(currentAction == "NotasCredito" ? "active" : "")" asp-controller="Reportes" asp-action="NotasCredito">Notas de crédito</a>
                         <a class="menu-item @(currentAction == "LibroVentas" ? "active" : "")" asp-controller="Reportes" asp-action="LibroVentas">Libro de ventas</a>
                         <a class="menu-item @(currentAction == "LibroCompras" ? "active" : "")" asp-controller="Reportes" asp-action="LibroCompras">Libro de compras</a>
                         <a class="menu-item @(currentAction == "FlujoCaja" ? "active" : "")" asp-controller="Reportes" asp-action="FlujoCaja">Flujo de caja</a>
 
                         @if (User.IsInRole("Administrador"))
                         {
-                            <div class="menu-title">Configuracion</div>
+                            <div class="menu-title">Configuración</div>
                             <a class="menu-item @(currentAction == "Empresa" ? "active" : "")" asp-controller="Configuracion" asp-action="Empresa">Empresa</a>
                             <a class="menu-item @(currentAction == "UsuariosRoles" ? "active" : "")" asp-controller="Configuracion" asp-action="UsuariosRoles">Usuarios / Roles</a>
                         }
@@ -123,6 +125,16 @@
             <span>Desarrollado por DevTechRD 829-966-1111</span>
             <a class="btn btn-success btn-sm footer-whatsapp" href="https://wa.me/18299661111" target="_blank" rel="noopener noreferrer">WhatsApp</a>
         </footer>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(toastMessage))
+    {
+        <div class="toast-shell">
+            <div class="app-toast app-toast-@toastType" role="status" aria-live="polite" data-toast>
+                <div class="app-toast-title">Éxito</div>
+                <div>@toastMessage</div>
+            </div>
+        </div>
     }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

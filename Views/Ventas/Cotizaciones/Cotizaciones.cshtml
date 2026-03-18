@@ -5,14 +5,31 @@
 <section class="panel-card">
     <div class="section-header">
         <h3 class="h5 mb-0">Cotizaciones</h3>
-        <a class="btn btn-primary" asp-action="CrearCotizacion">Nueva cotizacion</a>
+        <a class="btn btn-primary" asp-action="CrearCotizacion">Nueva cotización</a>
     </div>
+    @if (TempData["Error"] is string error)
+    {
+        <div class="alert alert-warning">@error</div>
+    }
     <table class="table table-striped datatable">
-        <thead><tr><th>Numero</th><th>Fecha</th><th>Cliente</th><th>Estado</th><th>Total</th></tr></thead>
+        <thead><tr><th>Número</th><th>Fecha</th><th>Cliente</th><th>Estado</th><th>Total</th><th>Acciones</th></tr></thead>
         <tbody>
         @foreach (var item in Model)
         {
-            <tr><td>@item.Number</td><td>@item.Date.ToString("dd/MM/yyyy")</td><td>@item.Customer?.Name</td><td>@item.Status</td><td>@item.Total.ToString("N2")</td></tr>
+            <tr>
+                <td>@item.Number</td>
+                <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                <td>@item.Customer?.Name</td>
+                <td>@item.Status.GetDisplayName()</td>
+                <td>@item.Total.ToString("N2")</td>
+                <td class="d-flex gap-2">
+                    <a class="btn btn-sm btn-primary" asp-action="ImprimirCotizacion" asp-route-id="@item.Id" target="_blank">PDF</a>
+                    <form asp-action="FacturarCotizacion" asp-route-id="@item.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-outline-success">Facturar</button>
+                    </form>
+                </td>
+            </tr>
         }
         </tbody>
     </table>
